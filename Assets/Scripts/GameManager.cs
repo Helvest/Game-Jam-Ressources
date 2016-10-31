@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 
 public class GameManager : MonoBehaviour
@@ -25,6 +26,16 @@ public class GameManager : MonoBehaviour
 	void Awake()
 	{
 		DontDestroyOnLoad(transform.gameObject);
+	}
+
+	public void LoadScene(string sceneName)
+	{
+		SceneManager.LoadScene(sceneName);
+	}
+
+	public void LoadScene(int sceneNumber)
+	{
+		SceneManager.LoadScene(sceneNumber);
 	}
 
 	/*
