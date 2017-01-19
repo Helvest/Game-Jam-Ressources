@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manage the loading screen
+/// </summary>
 public class LoadingScreen : MonoBehaviour
 {
 	[SerializeField]
@@ -14,9 +17,15 @@ public class LoadingScreen : MonoBehaviour
 	[SerializeField]
 	private float timeForBar = 0.25f;
 
+	/// <summary>
+	/// CanvasGroup who appart in the loading screen
+	/// </summary>
 	[SerializeField]
 	private CanvasGroup canvasGroup;
 
+	/// <summary>
+	/// Material who maske the screen
+	/// </summary>
 	[SerializeField]
 	private Material cameraMaterial;
 
@@ -25,6 +34,9 @@ public class LoadingScreen : MonoBehaviour
 
 	private static Slider slider;
 
+	/// <summary>
+	/// Instance of the singeton LoadingScreen
+	/// </summary>
 	public static LoadingScreen instance;
 
 	private static bool isLoading = false;
@@ -53,6 +65,9 @@ public class LoadingScreen : MonoBehaviour
 		DontDestroyOnLoad(this);
 	}
 
+	/// <summary>
+	/// Load Scene with loading screen
+	/// </summary>
 	public void Load(int sceneNumber)
 	{
 		if(!instance || isLoading)
@@ -64,6 +79,9 @@ public class LoadingScreen : MonoBehaviour
 		StartCoroutine(AnnexeOperation());
 	}
 
+	/// <summary>
+	/// Load Scene with loading screen
+	/// </summary>
 	public void Load(string sceneName)
 	{
 		if(!instance || isLoading)

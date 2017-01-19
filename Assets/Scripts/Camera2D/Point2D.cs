@@ -1,58 +1,89 @@
 ﻿using UnityEngine;
 
-//Positions 2D 
+/// <summary>
+/// Point for 2D position and adjustment
+/// </summary>
 public class Point2D
 {
-	public EnumCameraPlan enumCameraPlan;
+	/// <summary>
+	/// Position of the point
+	/// </summary>
 	public Vector2 position = Vector2.zero;
-	public Vector2 decalage = Vector2.zero;
-	private Vector2 cameraPosition;
+	/// <summary>
+	/// offset of the point
+	/// </summary>
+	public Vector2 offset = Vector2.zero;
 
-	public Point2D()
-	{
-	}
+	/// <summary>
+	/// Create a default point
+	/// </summary>
+	public Point2D(){}
 
+	/// <summary>
+	/// Create a point and set position
+	/// </summary>
 	public Point2D(float X, float Y)
 	{
 		position = new Vector2(X, Y);
 	}
 
-	public Point2D(float X, float Y, float DX, float DY)
+	/// <summary>
+	/// Create a point and set position and offset
+	/// </summary>
+	public Point2D(float X, float Y, float OX, float OY)
 	{
 		position = new Vector2(X, Y);
-		decalage = new Vector2(DX, DY);
+		offset = new Vector2(OX, OY);
 	}
 
+	/// <summary>
+	/// Create a point and set position
+	/// </summary>
 	public Point2D(Vector2 _position)
 	{
 		position = _position;
 	}
 
-	public Point2D(Vector2 _position, Vector2 _decalage)
+	/// <summary>
+	/// Create a point and set position and offset
+	/// </summary>
+	public Point2D(Vector2 _position, Vector2 _offset)
 	{
 		position = _position;
-		decalage = _decalage;
+		offset = _offset;
 	}
 
+	/// <summary>
+	/// Create a point and set position
+	/// </summary>
 	public Point2D(Vector3 _position)
 	{
 		position = _position;
 	}
 
-	public Point2D(Vector3 _position, Vector3 _decalage)
+	/// <summary>
+	/// Create a point and set position and offset
+	/// </summary>
+	public Point2D(Vector3 _position, Vector3 _offset)
 	{
 		position = _position;
-		decalage = _decalage;
+		offset = _offset;
 	}
 
+	/// <summary>
+	/// Absolute position of the point for the camera
+	/// </summary>
 	public Vector2 CameraPosition
 	{
 		get
 		{
-			return position + decalage;
+			return position + offset;
 		}
 	}
 
+	/// <summary>
+	/// Create a default point
+	/// </summary>
 	public static Point2D zero
 	{
 		get

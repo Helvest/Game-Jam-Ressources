@@ -1,33 +1,38 @@
 ﻿using UnityEngine;
 
-//Script à mettre sur les objets pour un suivi de la camera
+/// <summary>
+/// Script for set camera 2D comportement on a object
+/// Comportement: camera is fixed on a position relative to a object
+/// </summary>
 public class Camera2DLogic : MonoBehaviour
 {
-    static int IDs = -1;
-
-    [SerializeField]
-    protected int iD;
+	/// <summary>
+	/// Axe of comportement
+	/// </summary>
 	[SerializeField]
 	protected EnumCameraPlan plan = EnumCameraPlan.XY;
-	public Vector2 decalage = Vector2.zero;
+	/// <summary>
+	/// 
+	/// </summary>
+	public Vector2 offset = Vector2.zero;
 
+	/// <summary>
+	/// Optimisation for call transform
+	/// </summary>
     protected Transform _transform;
 
-    public int ID
-     {
-         get
-         {
-             return iD;
-         }
-     }
-
+	/// <summary>
+	/// </summary>
     virtual protected void Awake()
     {
         _transform = transform;
-        iD = ++IDs;
     }
 
-    virtual public void UpdatePoint(ref Point2D point2D)
+	/// <summary>
+	/// Update camera position with the defined comportement
+	/// </summary>
+	/// <param name="point2D">Object for 2D position and adjustment</param>
+	virtual public void UpdatePoint(ref Point2D point2D)
 	{
 #if UNITY_EDITOR
 		_transform = transform;
@@ -45,7 +50,7 @@ public class Camera2DLogic : MonoBehaviour
                 break;
         }
 
-		point2D.decalage = decalage;
+		point2D.offset = offset;
 
 	}
 }

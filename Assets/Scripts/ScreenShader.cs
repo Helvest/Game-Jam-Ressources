@@ -1,8 +1,14 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Script for put a shader on the camera screen
+/// </summary>
 [ExecuteInEditMode]
 public class ScreenShader : MonoBehaviour
 {
+	/// <summary>
+	/// Material with shader for camera screen
+	/// </summary>
 	public Material TransitionMaterial;
 
 	void OnRenderImage(RenderTexture src, RenderTexture dst)

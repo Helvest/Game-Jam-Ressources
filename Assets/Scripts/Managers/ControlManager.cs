@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Manage advanced inputs and Controllable scripts
+/// </summary>
 public class ControlManager : MonoBehaviour
 {
 	private static ControlManager instance;
 
 	private ControlManager() { }
-
+	/// <summary>
+	/// Instance of the singeton ControlManager
+	/// </summary>
 	public static ControlManager Instance
 	{
 		get
@@ -48,6 +53,9 @@ public class ControlManager : MonoBehaviour
 
 	private static Controllable[] controllableCharacters = new Controllable[0];
 
+	/// <summary>
+	/// Add controllable objets on the liste of actifs controllables
+	/// </summary>
 	public static void AddControllableCharacters(Controllable controllable)
 	{
 		int ccLength = controllableCharacters.Length;
@@ -76,6 +84,9 @@ public class ControlManager : MonoBehaviour
 		controllable.isControlled = true;
 	}
 
+	/// <summary>
+	/// Remove controllable objets on the liste of actifs controllables
+	/// </summary>
 	public static void RemoveControllableCharacters(Controllable controllable)
 	{
 		int ccLength = controllableCharacters.Length;
@@ -117,8 +128,6 @@ public class ControlManager : MonoBehaviour
 		controllable.isControlled = false;
 	}
 
-	public static Vector2 movement = Vector2.zero;
-
 	[SerializeField]
 	private float upDoubleTime = 0.175f;
 	private static float[] upDoubleTimer = new float[4];
@@ -159,8 +168,6 @@ public class ControlManager : MonoBehaviour
 			}
 
 			playerID = controllable.playerID;
-
-			movement.Set(Input.GetAxis("Horizontal_" + playerID), Input.GetAxis("Vertical_" + playerID));
 
 			//ActionA
 			if(Input.GetButtonDown("ActionA_" + playerID))
@@ -298,6 +305,9 @@ public class ControlManager : MonoBehaviour
 	}
 }
 
+/// <summary>
+/// Liste of all possible inputs
+/// </summary>
 public enum InputListe
 {
 	None,

@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//limite le deplacement de la cible dans 2 carrés
+/// <summary>
+/// Limits the displacement of the target in two squares
+/// </summary>
 public class Camera2D_TwoZone : Camera2DLogic
 {
 	[SerializeField]
@@ -40,6 +42,10 @@ public class Camera2D_TwoZone : Camera2DLogic
         distanceMax = distanceMin + distanceFree;
     }
 
+	/// <summary>
+	/// Update camera position with the defined comportement
+	/// </summary>
+	/// <param name="point2D">Object for 2D position and adjustment</param>
 	public override void UpdatePoint(ref Point2D point2D)
     {
         if (plan == EnumCameraPlan.X || plan == EnumCameraPlan.XY)
@@ -55,7 +61,6 @@ public class Camera2D_TwoZone : Camera2DLogic
     private float Calcul(float transPosition, float point, ref sbyte direction, ref float lastDistance, ref bool reset, ref float objectif, ref float wait, ref float antiObjectif)
     {
 		distanceMax = distanceMin + distanceFree;
-
 
 		if (reset)
 		{

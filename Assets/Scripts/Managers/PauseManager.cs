@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Manage the pause system and canvas in pause state
+/// </summary>
 public class PauseManager : MonoBehaviour
 {
 	private static PauseManager instance;
 
 	private PauseManager() { }
 
+	/// <summary>
+	/// Instance of the singeton PauseManager
+	/// </summary>
 	public static PauseManager Instance
 	{
 		get
@@ -18,13 +24,16 @@ public class PauseManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// CanvasGroup who appart in pause
+	/// </summary>
 	[SerializeField]
 	private CanvasGroup canvasGroup;
 
-	//[SerializeField]
-	//private EventSystem eventSystem;
-
 	private static bool isPause = false;
+	/// <summary>
+	/// On/Off pause state
+	/// </summary>
 	public static bool IsPause
 	{
 		get

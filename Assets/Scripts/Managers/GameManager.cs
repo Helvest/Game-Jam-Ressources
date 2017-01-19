@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Manage states of the game
+/// </summary>
 public class GameManager : MonoBehaviour
 {
 	private static GameManager instance;
 
 	private GameManager(){}
 
+	/// <summary>
+	/// Instance of the singeton GameManager
+	/// </summary>
 	public static GameManager Instance
 	{
 		get
@@ -18,6 +24,9 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Possible states of the game
+	/// </summary>
 	public enum States
 	{
 		Other,
@@ -27,6 +36,10 @@ public class GameManager : MonoBehaviour
 	}
 
 	private static States state = States.InMenu;
+	/// <summary>
+	/// Actual state of the game
+	/// Make the transition from one state to another
+	/// </summary>
 	public static States State
 	{
 		get
@@ -83,11 +96,17 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(gameObject);
 	}
 
+	/// <summary>
+	/// Load Scene with the loader
+	/// </summary>
 	public void LoadScene(string sceneName)
 	{
 		LoadingScreen.instance.Load(sceneName);
 	}
 
+	/// <summary>
+	/// Load Scene with the loader
+	/// </summary>
 	public void LoadScene(int sceneNumber)
 	{
 		LoadingScreen.instance.Load(sceneNumber);

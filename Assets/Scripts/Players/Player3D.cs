@@ -45,6 +45,7 @@ public class Player3D : Controllable
 		}
 	}
 
+	/// <summary></summary>
 	public override void UseActionA_Press()
 	{
 

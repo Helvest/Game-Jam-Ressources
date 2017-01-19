@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Script for set camera 2D comportement on a object
+/// Comportement: camera is fixed on a position between the objects and a Vector2 position
+/// </summary>
 public class Camera2D_FocusObject : Camera2DLogic
 {
+	/// <summary>
+	/// Position that camera will use for focus between it and a object
+	/// </summary>
 	public Vector2 positionToFocus = Vector2.zero;
 
 	[SerializeField]
@@ -11,6 +18,10 @@ public class Camera2D_FocusObject : Camera2DLogic
 	[SerializeField]
 	private float distanceMin = 0.1F;
 
+	/// <summary>
+	/// Update camera position with the defined comportement
+	/// </summary>
+	/// <param name="point2D">Object for 2D position and adjustment</param>
 	public override void UpdatePoint(ref Point2D point2D)
 	{
 		if (plan == EnumCameraPlan.X || plan == EnumCameraPlan.XY)

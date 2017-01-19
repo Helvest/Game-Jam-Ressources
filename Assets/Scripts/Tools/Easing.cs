@@ -1,9 +1,20 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Class for easings calculus
+/// </summary>
 public static class Easing
 {
-	//linearStep = %
+	private const float PI = Mathf.PI;
+	private const float HalfPI = (PI / 2);
 
+	/// <summary>
+	/// Calculate the Ease from a pourcent
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing float</returns>
 	public static float Ease(float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		switch(part)
@@ -21,31 +32,71 @@ public static class Easing
 		}
 	}
 
+	/// <summary>
+	/// Calculate the Ease position between two Vector2
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing Vector2</returns>
 	public static Vector2 EaseVector2(Vector2 from, Vector2 to, float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		return Vector2.LerpUnclamped(from, to, Ease(linearStep, part, type));
 	}
 
+	/// <summary>
+	/// Calculate the Ease position between two Vector3
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing Vector3</returns>
 	public static Vector3 EaseVector3(Vector3 from, Vector3 to, float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		return Vector3.LerpUnclamped(from, to, Ease(linearStep, part, type));
 	}
 
+	/// <summary>
+	/// Calculate the Ease position between two Vector4
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing Vector4</returns>
 	public static Vector4 EaseVector4(Vector4 from, Vector4 to, float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		return Vector4.LerpUnclamped(from, to, Ease(linearStep, part, type));
 	}
 
+	/// <summary>
+	/// Calculate the Ease position between two Color32
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing Color32</returns>
 	public static Color32 EaseColor32(Color32 from, Color32 to, float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		return Color32.LerpUnclamped(from, to, Ease(linearStep, part, type));
 	}
 
+	/// <summary>
+	/// Calculate the Ease position between two Colors
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing Color</returns>
 	public static Color EaseColor(Color from, Color to, float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		return Color.LerpUnclamped(from, to, Ease(linearStep, part, type));
 	}
 
+	/// <summary>
+	/// Calculate a Ease In from a pourcent
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="type">Easing Type</param>
 	public static float EaseIn(float linearStep, EasingType type)
 	{
 		switch(type)
@@ -71,6 +122,11 @@ public static class Easing
 		}
 	}
 
+	/// <summary>
+	/// Calculate a Ease Out from a pourcent
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="type">Easing Type</param>
 	public static float EaseOut(float linearStep, EasingType type)
 	{
 		switch(type)
@@ -97,11 +153,22 @@ public static class Easing
 
 	}
 
+	/// <summary>
+	/// Calculate a Ease InOut from a pourcent
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="easeInType">Easing Type for the In</param>
+	/// <param name="easeOutType">Easing Type for the Out</param>
 	public static float EaseInOut(float linearStep, EasingType easeInType, EasingType easeOutType)
 	{
 		return linearStep < 0.5 ? EaseInOut(linearStep, easeInType) : EaseInOut(linearStep, easeOutType);
 	}
 
+	/// <summary>
+	/// Calculate a Ease InOut from a pourcent
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="type">Easing Type</param>
 	public static float EaseInOut(float linearStep, EasingType type)
 	{
 		switch(type)
@@ -131,15 +198,15 @@ public static class Easing
 	{
 		public static float EaseIn(float s)
 		{
-			return Mathf.Sin(s * MathHelper.HalfPi - MathHelper.HalfPi) + 1;
+			return Mathf.Sin(s * HalfPI - HalfPI) + 1;
 		}
 		public static float EaseOut(float s)
 		{
-			return Mathf.Sin(s * MathHelper.HalfPi);
+			return Mathf.Sin(s * HalfPI);
 		}
 		public static float EaseInOut(float s)
 		{
-			return (Mathf.Sin(s * MathHelper.Pi - MathHelper.HalfPi) + 1) / 2;
+			return (Mathf.Sin(s * PI - HalfPI) + 1) / 2;
 		}
 	}
 
@@ -174,8 +241,8 @@ public static class Easing
 				return t;
 
 			p = .3f;
-			s = p / (2 * Mathf.PI) * Mathf.Asin(1);
-			return -(Mathf.Pow(2, 10 * (t -= 1)) * Mathf.Sin((t - s) * (2 * Mathf.PI) / p));
+			s = p / (2 * PI) * Mathf.Asin(1);
+			return -(Mathf.Pow(2, 10 * (t -= 1)) * Mathf.Sin((t - s) * (2 * PI) / p));
 		}
 
 		public static float EaseOut(float t)
@@ -184,8 +251,8 @@ public static class Easing
 				return t;
 
 			p = .3f;
-			s = p / (2 * Mathf.PI) * Mathf.Asin(1);
-			return Mathf.Pow(2, -10 * t) * Mathf.Sin((t - s) * (2 * Mathf.PI) / p) + 1;
+			s = p / (2 * PI) * Mathf.Asin(1);
+			return Mathf.Pow(2, -10 * t) * Mathf.Sin((t - s) * (2 * PI) / p) + 1;
 		}
 
 		public static float EaseInOut(float t)
@@ -194,20 +261,23 @@ public static class Easing
 				return t;
 
 			p = .3f;
-			s = p / (2 * Mathf.PI) * Mathf.Asin(1);
+			s = p / (2 * PI) * Mathf.Asin(1);
 
 			if(t < .5f)
 			{
 				t *= 2;
-				return -.5f * (Mathf.Pow(2, 10 * (t -= 1)) * Mathf.Sin((t - s) * (2 * Mathf.PI) / p));
+				return -.5f * (Mathf.Pow(2, 10 * (t -= 1)) * Mathf.Sin((t - s) * (2 * PI) / p));
 			}
 			t -= 0.5f;
 			t *= 2;
-			return .5f * Mathf.Pow(2, -10 * t) * Mathf.Sin((t - s) * (2 * Mathf.PI) / p) + 1;
+			return .5f * Mathf.Pow(2, -10 * t) * Mathf.Sin((t - s) * (2 * PI) / p) + 1;
 		}
 	}
 }
 
+/// <summary>
+/// Liste of possible part with ease
+/// </summary>
 public enum EasingPart
 {
 	NoEase,
@@ -216,6 +286,9 @@ public enum EasingPart
 	EaseInOut
 }
 
+/// <summary>
+/// Liste of possible type of ease
+/// </summary>
 public enum EasingType
 {
 	Step,
@@ -226,15 +299,4 @@ public enum EasingType
 	Quartic,
 	Quintic,
 	Elastic
-}
-
-public static class MathHelper
-{
-	public const float Pi = Mathf.PI;
-	public const float HalfPi = (Mathf.PI / 2);
-
-	public static float Lerp(float from, float to, float step)
-	{
-		return ((to - from) * step + from);
-	}
 }

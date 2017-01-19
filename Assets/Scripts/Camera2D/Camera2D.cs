@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 
-//Script unique pour la camera
+/// <summary>
+/// Script for the camera for 2D comportement
+/// </summary>
 public class Camera2D : MonoBehaviour
 {
 	[HideInInspector]
-	public bool IFollowA = true;
+	private bool IFollowA = true;
 	[HideInInspector]
-	public Point2D pointA;
+	private Point2D pointA;
 	[HideInInspector]
-	public Point2D pointB;
+	private Point2D pointB;
 
 	private Point2D point;
 	private Point2D pointPre;
@@ -23,6 +25,13 @@ public class Camera2D : MonoBehaviour
 	float easeTime;
 	float easeTimer;
 
+	/// <summary>
+	/// Move camera with ease to a new target
+	/// </summary>
+	/// <param name="targetTransforme">new target</param>
+	/// <param name="time">time of transition</param>
+	/// <param name="part">EasingPart</param>
+	/// <param name="type">EasingType</param>
 	public void SetTargetWishEase(Transform targetTransforme, float time = 1, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
 	{
 		isTransition = true;
@@ -35,6 +44,10 @@ public class Camera2D : MonoBehaviour
 		SetTarget(targetTransforme);
 	}
 
+	/// <summary>
+	/// Give to the camera a new target to follow without transition
+	/// </summary>
+	/// <param name="targetTransforme">new target</param>
 	public void SetTarget(Transform targetTransforme)
 	{
 		targets = targetTransforme.GetComponents<Camera2DLogic>();
@@ -65,11 +78,11 @@ public class Camera2D : MonoBehaviour
 				pointPre.position = transform.position;
 			}
 
-			point.decalage = Vector2.zero;
+			point.offset = Vector2.zero;
 
 			foreach(Camera2DLogic i in targets)
 			{
-				point.decalage += i.decalage;
+				point.offset += i.offset;
 			}
 		}
 	}

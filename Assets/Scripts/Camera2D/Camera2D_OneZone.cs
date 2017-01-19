@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 
-//limite le deplacement de la cible dans un carré
+/// <summary>
+/// Limits the displacement of the target in a square
+/// </summary>
 public class Camera2D_OneZone : Camera2DLogic
 {
 	[SerializeField,Range(0,20)]
 	private float width = 2;
-	public float Width
+	private float Width
 	{
 		get
 		{
@@ -44,6 +46,10 @@ public class Camera2D_OneZone : Camera2DLogic
 		heightD2 = Height / 2;
 	}
 
+	/// <summary>
+	/// Update camera position with the defined comportement
+	/// </summary>
+	/// <param name="point2D">Object for 2D position and adjustment</param>
 	public override void UpdatePoint(ref Point2D point2D)
 	{
 #if UNITY_EDITOR
@@ -87,7 +93,7 @@ public class Camera2D_OneZone : Camera2DLogic
 			_point2D = new Point2D(Camera.main.transform.position);
 		}
 
-		_point2D.decalage = decalage;
+		_point2D.offset = offset;
 
 		widthD2 = Width / 2;
 		heightD2 = height / 2;
