@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Camera2D_FocusObject : Camera2DLogic
 {
-
 	public Vector2 positionToFocus = Vector2.zero;
 
 	[SerializeField]
@@ -13,18 +11,8 @@ public class Camera2D_FocusObject : Camera2DLogic
 	[SerializeField]
 	private float distanceMin = 0.1F;
 
-
-	void Start()
-	{
-	
-	}
-
 	public override void UpdatePoint(ref Point2D point2D)
 	{
-#if UNITY_EDITOR
-		_point2D = point2D;
-#endif
-
 		if (plan == EnumCameraPlan.X || plan == EnumCameraPlan.XY)
 		{
 			point2D.position.x = Calcul(_transform.position.x, point2D.position.x, positionToFocus.x);
@@ -46,7 +34,6 @@ public class Camera2D_FocusObject : Camera2DLogic
 	}
 
 #if UNITY_EDITOR
-	private Point2D _point2D = Point2D.zero;
 	void OnDrawGizmos()
 	{
 		if (plan != EnumCameraPlan.NO)

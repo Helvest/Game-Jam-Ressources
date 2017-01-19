@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,9 +13,9 @@ public class LevelManager : MonoBehaviour
 		camera2D = mainCamera.GetComponent<Camera2D>();
 		camera2D.SetTarget(player);
 	}
-
+	/*
 	void Update()
 	{
 
-	}
+	}*/
 }

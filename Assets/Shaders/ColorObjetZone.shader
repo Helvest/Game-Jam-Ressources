@@ -1,11 +1,14 @@
-﻿Shader "Camera/ColorScreenZone"
+﻿Shader "Camera/ColorObjetZone"
 {
 	Properties
 	{
 		_MainTex("Texture", 2D) = "white" {}
 	_TransitionTex("Transition Texture", 2D) = "white" {}
+	_SecondTex("Second Texture", 2D) = "white" {}
 	_Color("Screen Color", Color) = (1,1,1,1)
+		_Division("Division", int) = 8
 		_Cutoff("Cutoff", Range(0, 1)) = 0
+		_Move("Move", float) = 0
 	}
 
 		SubShader
@@ -61,8 +64,11 @@
 
 	sampler2D _MainTex;
 	sampler2D _TransitionTex;
-	float _Cutoff;
+	sampler2D _SecondTex;
 	fixed4 _Color;
+	int _Division;
+	float _Cutoff;
+	float _Move;
 
 	fixed4 frag(v2f i) : SV_Target
 	{
@@ -70,8 +76,17 @@
 
 	fixed4 col = tex2D(_MainTex, i.uv);
 
+	fixed4 colSecond = tex2D(_SecondTex, i.uv * _Division + _Move);
+
 	if (transit.b < _Cutoff || _Cutoff == 1)
-		col = lerp(col, _Color, _Color.a);
+	{
+		col = _Color + colSecond;
+	}
+
+	if (_Move >= 1)
+		_Move--;
+	else if (_Move <= -1)
+		_Move++;
 
 	return col;
 	}
