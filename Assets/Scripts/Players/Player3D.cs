@@ -46,17 +46,11 @@ public class Player3D : Controllable
 	}
 
 	/// <summary></summary>
-	public override void UseActionA_Press()
-	{
-
-	}
+	public override void UseActionA_Press() { }
 
 	public override void UseActionA_Release() { }
 
-	public override void UseActionB_Press()
-	{
-
-	}
+	public override void UseActionB_Press() { }
 
 	public override void UseActionB_Release() { }
 
