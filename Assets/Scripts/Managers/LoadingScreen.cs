@@ -105,6 +105,8 @@ public class LoadingScreen : MonoBehaviour
 
 	IEnumerator LoadingOperation()
 	{
+		GameManager.State = GameManager.States.InLoading;
+
 		//preparation
 		isLoading = true;
 		float timer = 0;

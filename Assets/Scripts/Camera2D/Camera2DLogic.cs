@@ -49,8 +49,5 @@ public class Camera2DLogic : MonoBehaviour
                 point2D.position.y = _transform.position.y;
                 break;
         }
-
-		point2D.offset = offset;
-
 	}
 }

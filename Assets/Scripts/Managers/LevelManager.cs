@@ -5,16 +5,18 @@
 /// </summary>
 public class LevelManager : MonoBehaviour
 {
-	Transform player, mainCamera;
-	Camera2D camera2D;
+	public static Transform player, mainCamera;
+	public static Camera3D camera3D;
 
 	void Start()
 	{
+		GameManager.State = GameManager.States.InGame;
+
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		mainCamera = Camera.main.transform;
 
-		camera2D = mainCamera.GetComponent<Camera2D>();
-		camera2D.SetTarget(player);
+		camera3D = mainCamera.GetComponent<Camera3D>();
+		camera3D.SetTarget(player);
 	}
 	/*
 	void Update()

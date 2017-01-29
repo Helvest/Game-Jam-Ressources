@@ -15,19 +15,22 @@ public class Controllable : MonoBehaviour
 	[Range(1,4)]
 	public int playerID = 1;
 
-	
 	protected virtual void Awake()
 	{
 		_transform = transform;
 	}
 
-	
 	protected virtual void Start()
 	{
 		ControlManager.AddControllableCharacters(this);
 	}
 
-	
+	protected virtual void OnDestroy()
+	{
+		ControlManager.RemoveControllableCharacters(this);
+	}
+
+
 	public virtual void UseActionA_Press() { }
 	
 	public virtual void UseActionA_Release() { }

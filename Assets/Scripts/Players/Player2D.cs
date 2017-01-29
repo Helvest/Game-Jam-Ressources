@@ -5,45 +5,45 @@ using UnityEngine;
 public class Player2D : Controllable
 {
 
-	// Use this for initialization
-	void Start () {
-		
+	protected override void Start()
+	{
+		base.Start();
+
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		
 	}
 
-	public virtual void UseActionA_Press() { }
+	public override void UseActionA_Press() { }
 
-	public virtual void UseActionA_Release() { }
+	public override void UseActionA_Release() { }
 
-	public virtual void UseActionB_Press() { }
+	public override void UseActionB_Press() { }
 
-	public virtual void UseActionB_Release() { }
+	public override void UseActionB_Release() { }
 
-	public virtual void UseActionX_Press() { }
+	public override void UseActionX_Press() { }
 
-	public virtual void UseActionX_Release() { }
+	public override void UseActionX_Release() { }
 
-	public virtual void UseActionY_Press() { }
+	public override void UseActionY_Press() { }
 
-	public virtual void UseActionY_Release() { }
+	public override void UseActionY_Release() { }
 
-	public virtual void Up() { }
+	public override void Up() { }
 
-	public virtual void UpDouble() { }
+	public override void UpDouble() { }
 
-	public virtual void Down() { }
+	public override void Down() { }
 
-	public virtual void DownDouble() { }
+	public override void DownDouble() { }
 
-	public virtual void Right() { }
+	public override void Right() { }
 
-	public virtual void RightDouble() { }
+	public override void RightDouble() { }
 
-	public virtual void Left() { }
+	public override void Left() { }
 
-	public virtual void LeftDouble() { }
+	public override void LeftDouble() { }
 }

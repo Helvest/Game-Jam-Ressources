@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Limits the displacement of the target in a square
+/// Script for set camera 2D comportement on a object
+/// Comportement: Limits the displacement of the target in a square
 /// </summary>
 public class Camera2D_OneZone : Camera2DLogic
 {

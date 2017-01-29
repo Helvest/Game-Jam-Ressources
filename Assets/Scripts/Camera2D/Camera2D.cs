@@ -5,11 +5,8 @@
 /// </summary>
 public class Camera2D : MonoBehaviour
 {
-	[HideInInspector]
 	private bool IFollowA = true;
-	[HideInInspector]
 	private Point2D pointA;
-	[HideInInspector]
 	private Point2D pointB;
 
 	private Point2D point;
@@ -55,6 +52,7 @@ public class Camera2D : MonoBehaviour
 		if(targets.Length == 0)
 		{
 			Debug.Log("Aucun script Camera2DLogic dans la cible");
+			return;
 		}
 		else
 		{

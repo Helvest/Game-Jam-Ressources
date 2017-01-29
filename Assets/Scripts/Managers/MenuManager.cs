@@ -5,6 +5,11 @@
 /// </summary>
 public class MenuManager : MonoBehaviour
 {
+	void Awake()
+	{
+		GameManager.State = GameManager.States.InMenu;
+	}
+
 	/// <summary>
 	/// Load Scene with the loader
 	/// </summary>

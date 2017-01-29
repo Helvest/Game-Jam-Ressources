@@ -4,95 +4,143 @@ using UnityEngine;
 
 public class Player3D : Controllable
 {
-
 	private Rigidbody _rigidbody;
 
 	[SerializeField]
-	private float speed = 10;
+	private float rotSpeed = 4;
 
 	[SerializeField]
-	private float torqueForce = 30;
+	private LayerMask layerMaskGround;
+	[SerializeField]
+	private float lineCastGroundOrig = 0.05f;
+	[SerializeField]
+	private float lineCastGround = 0.1f;
+
+	private bool canJump = false;
+	private bool canDoubleJump = false;
+
+	[SerializeField]
+	private float speedNormale = 10;
 
 	[SerializeField]
 	private float jumpForce = 10;
 
+	//private Animator animator;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		//animator = GetComponent<Animator>();
+		_rigidbody = GetComponent<Rigidbody>();
+	}
+
 	protected override void Start()
 	{
-		base.Start();
-
-		_rigidbody = GetComponent<Rigidbody>();
+		ControlManager.AddControllableCharacters(this);
 	}
 
 	void Update()
 	{
-		if(!isControlled)
+		if(!isControlled || PauseManager.IsPause)
 		{
 			return;
 		}
 
-		if(Input.GetAxis("Vertical_" + playerID) != 0)
+		//Game over
+		if(_transform.position.y <= -10)
 		{
-			Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * _transform.right;
-			direction += Input.GetAxis("Vertical_" + playerID) * _transform.forward;
-			direction = direction.normalized * speed;
-			direction.y = _rigidbody.velocity.y;
-			_rigidbody.velocity = direction;
+			//LevelManager.Respawn();
 		}
 
-		if(Input.GetAxis("Horizontal_" + playerID) != 0)
+		Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCamera.right;
+		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCamera.forward;
+
+		direction = direction.normalized * speedNormale;
+		direction.y = 0;
+
+		Quaternion pastRot = _transform.rotation;
+
+		if(direction.x != 0 || direction.z != 0)
 		{
-			_rigidbody.angularVelocity = Input.GetAxis("Horizontal_" + playerID) * _transform.up * torqueForce;
+			_transform.LookAt(_transform.position + direction);
+		}
+
+
+		_transform.rotation = Quaternion.RotateTowards(pastRot, _transform.rotation, rotSpeed);
+
+		direction.y = _rigidbody.velocity.y;
+		_rigidbody.velocity = direction;
+
+		//check ground
+		canJump = Physics.Linecast(_transform.position + (Vector3.up * lineCastGroundOrig), _transform.position - (Vector3.up * (lineCastGround)), layerMaskGround);
+
+/*
+		if(canJump)
+		{
+			if(direction.x != 0 || direction.z != 0)
+			{
+				animator.SetInteger("State", 1);
+			}
+			else
+			{
+				animator.SetInteger("State", 0);
+			}
+		}
+		else
+		{
+			animator.SetInteger("State", 2);
+		}
+*/
+	}
+
+	public override void UseActionA_Press()
+	{
+		if(canJump || canDoubleJump)
+		{
+			if(canDoubleJump)
+			{
+				canDoubleJump = false;
+			}
+
+			if(canJump)
+			{
+				canDoubleJump = true;
+			}
+
+			canJump = false;
+
+			_rigidbody = GetComponent<Rigidbody>();
+
+			Vector3 velocity = _rigidbody.velocity;
+			velocity.y = 0;
+			_rigidbody.velocity = velocity;
+			_rigidbody.AddForce(_transform.up * jumpForce);
 		}
 	}
 
-	/// <summary></summary>
-	public override void UseActionA_Press() { }
-
-	public override void UseActionA_Release() { }
-
-	public override void UseActionB_Press() { }
-
-	public override void UseActionB_Release() { }
+	public override void UseActionB_Press()
+	{
+	}
 
 	public override void UseActionX_Press()
 	{
-		Debug.Log("UseActionX_Press");
 	}
-
-	public override void UseActionX_Release() { }
 
 	public override void UseActionY_Press()
 	{
-		_rigidbody.AddForce(transform.up * jumpForce);
 	}
 
-	public override void UseActionY_Release() { }
-
-	public override void Up()
+	public override void UseActionY_Release()
 	{
-		Debug.Log("Up");
 	}
 
-	public override void UpDouble() { }
 
-	public override void Down()
+#if UNITY_EDITOR
+	void OnDrawGizmos()
 	{
-		Debug.Log("Down");
+		Gizmos.color = Color.cyan;
+		Gizmos.DrawLine(transform.position + (Vector3.up * lineCastGroundOrig), transform.position - (Vector3.up * lineCastGround));
 	}
+#endif
 
-	public override void DownDouble() { }
-
-	public override void Right()
-	{
-		Debug.Log("Right");
-	}
-
-	public override void RightDouble() { }
-
-	public override void Left()
-	{
-		Debug.Log("Left");
-	}
-
-	public override void LeftDouble() { }
 }

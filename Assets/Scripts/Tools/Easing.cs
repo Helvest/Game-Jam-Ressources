@@ -69,6 +69,18 @@ public static class Easing
 	}
 
 	/// <summary>
+	/// Calculate the Ease rotation between two Quaternion
+	/// </summary>
+	/// <param name="linearStep">Pourcent on the ease</param>
+	/// <param name="part">Easing Part</param>
+	/// <param name="type">Easing Type</param>
+	/// <returns>A easing Quaternion</returns>
+	public static Quaternion EaseQuaternion(Quaternion from, Quaternion to, float linearStep, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
+	{
+		return Quaternion.LerpUnclamped(from, to, Ease(linearStep, part, type));
+	}
+
+	/// <summary>
 	/// Calculate the Ease position between two Color32
 	/// </summary>
 	/// <param name="linearStep">Pourcent on the ease</param>

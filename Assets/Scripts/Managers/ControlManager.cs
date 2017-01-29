@@ -162,8 +162,15 @@ public class ControlManager : MonoBehaviour
 		for(int i = 0; i < controllableCharacters.Length; i++)
 		{
 			controllable = controllableCharacters[i];
-			if(!controllable.isControlled)
+
+			if(!controllable)
 			{
+				RemoveControllableCharacters(controllable);
+				continue;
+			}
+			else if(!controllable.isControlled)
+			{
+				RemoveControllableCharacters(controllable);
 				continue;
 			}
 
