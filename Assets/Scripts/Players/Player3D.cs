@@ -7,23 +7,27 @@ public class Player3D : Controllable
 	private Rigidbody _rigidbody;
 
 	[SerializeField]
-	private float rotSpeed = 4;
+	private float speedMoveNormale = 9;
+	[SerializeField]
+	private float speedRotNormale = 400;
+
+	[SerializeField]
+	private float speedMoveInAir = 9;
+	[SerializeField]
+	private float speedRotInAir = 400;
+
+	[SerializeField]
+	private float jumpForce = 4000;
 
 	[SerializeField]
 	private LayerMask layerMaskGround;
 	[SerializeField]
-	private float lineCastGroundOrig = 0.05f;
+	private float sphereCastGroundOrig = 0f;
 	[SerializeField]
-	private float lineCastGround = 0.1f;
+	private float sphereCastGround = 0.15f;
 
 	private bool canJump = false;
 	private bool canDoubleJump = false;
-
-	[SerializeField]
-	private float speedNormale = 10;
-
-	[SerializeField]
-	private float jumpForce = 10;
 
 	//private Animator animator;
 
@@ -39,7 +43,10 @@ public class Player3D : Controllable
 		ControlManager.AddControllableCharacters(this);
 	}
 
-	void Update()
+	private float speedMove;
+	private float speedRot;
+
+	void FixedUpdate()
 	{
 		if(!isControlled || PauseManager.IsPause)
 		{
@@ -47,53 +54,51 @@ public class Player3D : Controllable
 		}
 
 		//Game over
-		if(_transform.position.y <= -10)
+		if(_rigidbody.position.y <= -10)
 		{
-			//LevelManager.Respawn();
+			_rigidbody.velocity = Vector3.zero;
+			LevelManager.Respawn();
+			return;
+		}
+
+		//check ground
+		canJump = Physics.CheckSphere(_rigidbody.position + (Vector3.up * sphereCastGroundOrig), sphereCastGround, layerMaskGround);
+
+		if(!canJump)
+		{
+			speedMove = speedMoveInAir;
+			speedRot = speedRotInAir;
+		}
+		else
+		{
+			speedMove = speedMoveNormale;
+			speedRot = speedRotNormale;
 		}
 
 		Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCamera.right;
 		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCamera.forward;
-
-		direction = direction.normalized * speedNormale;
 		direction.y = 0;
-
-		Quaternion pastRot = _transform.rotation;
+		direction = direction.normalized * speedMove;
 
 		if(direction.x != 0 || direction.z != 0)
 		{
-			_transform.LookAt(_transform.position + direction);
-		}
+			_rigidbody.MoveRotation(Quaternion.RotateTowards(_rigidbody.rotation, Quaternion.LookRotation(direction), speedRot * Time.fixedDeltaTime));
 
-
-		_transform.rotation = Quaternion.RotateTowards(pastRot, _transform.rotation, rotSpeed);
-
-		direction.y = _rigidbody.velocity.y;
-		_rigidbody.velocity = direction;
-
-		//check ground
-		canJump = Physics.Linecast(_transform.position + (Vector3.up * lineCastGroundOrig), _transform.position - (Vector3.up * (lineCastGround)), layerMaskGround);
-
-/*
-		if(canJump)
-		{
-			if(direction.x != 0 || direction.z != 0)
+			if(canJump)
 			{
-				animator.SetInteger("State", 1);
-			}
-			else
-			{
-				animator.SetInteger("State", 0);
+				_rigidbody.MovePosition(direction * Time.fixedDeltaTime + _rigidbody.position);
 			}
 		}
-		else
+
+		//in air the player don't add externe velocity
+		if(!canJump)
 		{
-			animator.SetInteger("State", 2);
+			direction.y = _rigidbody.velocity.y;
+			_rigidbody.velocity = direction;
 		}
-*/
 	}
 
-	public override void UseActionA_Press()
+	void Jump()
 	{
 		if(canJump || canDoubleJump)
 		{
@@ -109,13 +114,13 @@ public class Player3D : Controllable
 
 			canJump = false;
 
-			_rigidbody = GetComponent<Rigidbody>();
-
-			Vector3 velocity = _rigidbody.velocity;
-			velocity.y = 0;
-			_rigidbody.velocity = velocity;
 			_rigidbody.AddForce(_transform.up * jumpForce);
 		}
+	}
+
+	public override void UseActionA_Press()
+	{
+		Jump();
 	}
 
 	public override void UseActionB_Press()
@@ -130,16 +135,12 @@ public class Player3D : Controllable
 	{
 	}
 
-	public override void UseActionY_Release()
-	{
-	}
-
 
 #if UNITY_EDITOR
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.cyan;
-		Gizmos.DrawLine(transform.position + (Vector3.up * lineCastGroundOrig), transform.position - (Vector3.up * lineCastGround));
+		Gizmos.DrawWireSphere(transform.position + (Vector3.up * sphereCastGroundOrig), sphereCastGround);
 	}
 #endif
 
