@@ -3,36 +3,12 @@
 /// <summary>
 /// Manage advanced inputs and Controllable scripts
 /// </summary>
-public class ControlManager : MonoBehaviour
+public class ControlManager : Singleton<ControlManager>
 {
-	private static ControlManager instance;
 
-	private ControlManager() { }
-	/// <summary>
-	/// Instance of the singeton ControlManager
-	/// </summary>
-	public static ControlManager Instance
+	protected override void Awake()
 	{
-		get
-		{
-			if(instance == null)
-			{
-				instance = new ControlManager();
-			}
-			return instance;
-		}
-	}
-
-	void Awake()
-	{
-		if(instance)
-		{
-			Destroy(this);
-			return;
-		}
-
-		instance = this;
-		DontDestroyOnLoad(gameObject);
+		base.Awake();
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -48,7 +24,6 @@ public class ControlManager : MonoBehaviour
 			leftWasPress[i] =
 			false;
 		}
-
 	}
 
 	private static Controllable[] controllableCharacters = new Controllable[0];
@@ -225,7 +200,7 @@ public class ControlManager : MonoBehaviour
 			{
 				upDoubleTimer[i] -= Time.deltaTime;
 
-				if(Input.GetAxisRaw("DPadY_" + playerID) == 1)
+				if(Input.GetButtonDown("DPadY_" + playerID) && Input.GetAxisRaw("DPadY_" + playerID) == 1)
 				{
 					controllable.UpDouble();
 					upWasPress[i] = false;
@@ -238,7 +213,7 @@ public class ControlManager : MonoBehaviour
 			}
 			else
 			{
-				upWasPress[i] = Input.GetAxisRaw("DPadY_" + playerID) == 1;
+				upWasPress[i] = Input.GetButtonDown("DPadY_" + playerID) && Input.GetAxisRaw("DPadY_" + playerID) == 1;
 				upDoubleTimer[i] = upDoubleTime;
 			}
 
@@ -247,7 +222,7 @@ public class ControlManager : MonoBehaviour
 			{
 				downDoubleTimer[i] -= Time.deltaTime;
 
-				if(Input.GetAxisRaw("DPadY_" + playerID) == -1)
+				if(Input.GetButtonDown("DPadY_" + playerID) && Input.GetAxisRaw("DPadY_" + playerID) == -1)
 				{
 					controllable.DownDouble();
 					downWasPress[i] = false;
@@ -260,7 +235,7 @@ public class ControlManager : MonoBehaviour
 			}
 			else
 			{
-				downWasPress[i] = Input.GetAxisRaw("DPadY_" + playerID) == -1;
+				downWasPress[i] = Input.GetButtonDown("DPadY_" + playerID) && Input.GetAxisRaw("DPadY_" + playerID) == -1;
 				downDoubleTimer[i] = downDoubleTime;
 			}
 
@@ -269,7 +244,7 @@ public class ControlManager : MonoBehaviour
 			{
 				rightDoubleTimer[i] -= Time.deltaTime;
 
-				if(Input.GetAxisRaw("DPadX_" + playerID) == 1)
+				if(Input.GetButtonDown("DPadX_" + playerID) && Input.GetAxisRaw("DPadX_" + playerID) == 1)
 				{
 					controllable.RightDouble();
 					rightWasPress[i] = false;
@@ -282,7 +257,7 @@ public class ControlManager : MonoBehaviour
 			}
 			else
 			{
-				rightWasPress[i] = Input.GetAxisRaw("DPadX_" + playerID) == 1;
+				rightWasPress[i] = Input.GetButtonDown("DPadX_" + playerID) && Input.GetAxisRaw("DPadX_" + playerID) == 1;
 				rightDoubleTimer[i] = rightDoubleTime;
 			}
 
@@ -291,7 +266,7 @@ public class ControlManager : MonoBehaviour
 			{
 				leftDoubleTimer[i] -= Time.deltaTime;
 
-				if(Input.GetAxisRaw("DPadX_" + playerID) == -1)
+				if(Input.GetButtonDown("DPadX_" + playerID) && Input.GetAxisRaw("DPadX_" + playerID) == -1)
 				{
 					controllable.LeftDouble();
 					leftWasPress[i] = false;
@@ -304,10 +279,9 @@ public class ControlManager : MonoBehaviour
 			}
 			else
 			{
-				leftWasPress[i] = Input.GetAxisRaw("DPadX_" + playerID) == -1;
+				leftWasPress[i] = Input.GetButtonDown("DPadX_" + playerID) && Input.GetAxisRaw("DPadX_" + playerID) == -1;
 				leftDoubleTimer[i] = leftDoubleTime;
 			}
-
 		}
 	}
 }

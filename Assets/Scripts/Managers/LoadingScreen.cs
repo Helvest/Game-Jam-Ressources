@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Manage the loading screen
 /// </summary>
-public class LoadingScreen : MonoBehaviour
+public class LoadingScreen : Singleton<LoadingScreen>
 {
 	[SerializeField]
 	private string LoadSceneName = "Load";
@@ -34,11 +34,6 @@ public class LoadingScreen : MonoBehaviour
 
 	private static Slider slider;
 
-	/// <summary>
-	/// Instance of the singeton LoadingScreen
-	/// </summary>
-	public static LoadingScreen instance;
-
 	private static bool isLoading = false;
 
 	private static AsyncOperation asyncOperation;
@@ -46,14 +41,10 @@ public class LoadingScreen : MonoBehaviour
 	private static int nextSceneNumber = -1;
 	private static string nextSceneName = null;
 
-	void Awake()
+	protected override void Awake()
 	{
-		if(instance)
-		{
-			Destroy(this);
-			return;
-		}
-		instance = this;
+		base.Awake();
+
 		enabled = false;
 
 		transform.position = new Vector3(0.5f, 0.5f, 0.0f);

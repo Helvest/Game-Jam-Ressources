@@ -6,6 +6,9 @@ public class Player3D_Jumper : Controllable
 {
 	private Rigidbody _rigidbody;
 
+	[SerializeField]
+	private float gravity = 10;
+
 	private float speedMove;
 	private float speedRot;
 
@@ -59,7 +62,7 @@ public class Player3D_Jumper : Controllable
 		speedMove = speedMoveNormale;
 		speedRot = speedRotNormale;
 
-		Debug.Log("playerID: "+playerID);
+		//Debug.Log("playerID: "+playerID);
 	}
 
 	protected override void Start()
@@ -138,7 +141,7 @@ public class Player3D_Jumper : Controllable
 		if(!isJumping)
 		{
 			tempVector = _rigidbody.velocity;
-			tempVector.y -= 5 * Time.fixedDeltaTime;
+			tempVector.y -= gravity * Time.fixedDeltaTime;
 			_rigidbody.velocity = tempVector;
 			//_rigidbody.MovePosition(_transform.up * -5 * Time.fixedDeltaTime + _rigidbody.position);
 		}
@@ -195,16 +198,19 @@ public class Player3D_Jumper : Controllable
 	private float JumpHeight;
 
 	[SerializeField]
-	private float JumpNormalHeight = 3.2f;
+	private float JumpNormalHeight = 2.2f;
 
 	[SerializeField]
-	private float JumpRunHeight = 4.2f;
+	private float JumpNormalMovingHeight = 3.2f;
 
 	[SerializeField]
-	private float JumpCrouchHeight = 4.2f;
+	private float JumpRunHeight = 3.2f;
 
 	[SerializeField]
-	private float JumpReturnedHeight = 4.2f;
+	private float JumpCrouchHeight = 3.2f;
+
+	[SerializeField]
+	private float JumpReturnedHeight = 3.2f;
 
 	[SerializeField]
 	private float JumpBounceHeight = 1.2f;
@@ -212,17 +218,17 @@ public class Player3D_Jumper : Controllable
 	[SerializeField]
 	private float JumpWallHeight = 2.2f;
 	[SerializeField]
-	private float JumpWallDistance = 5;
+	private float JumpWallDistance = 4;
 
 	[SerializeField]
 	private float JumpLongHeight = 1.2f;
 	[SerializeField]
-	private float JumpLongDistance = 7;
+	private float JumpLongDistance = 6;
 
 	[SerializeField]
 	private float JumpLongRunHeight = 1.2f;
 	[SerializeField]
-	private float JumpLongRunDistance = 9;
+	private float JumpLongRunDistance = 8;
 
 	private Vector3 positionBeforeJump;
 	private Vector3 positionTargetJump;
@@ -254,21 +260,31 @@ public class Player3D_Jumper : Controllable
 				JumpCalcul(false, JumpRunHeight, 0, speedMoveRun);
 			}
 		}
-		else
+		else if(isMoving)
 		{
-			if(isCrouch && !isMoving)
-			{
-				JumpCalcul(false, JumpCrouchHeight, 0, speedMoveCrouch);
-			}
-			else if(isCrouch)
+			if(isCrouch)
 			{
 				JumpCalcul(true, JumpLongHeight, JumpLongDistance, speedMoveCrouch);
+			}
+			else
+			{
+				JumpCalcul(false, JumpNormalMovingHeight, 0, speedMoveNormale);
+			}
+		}
+		else
+		{
+			if(isCrouch)
+			{
+				JumpCalcul(false, JumpCrouchHeight, 0, speedMoveCrouch);
 			}
 			else
 			{
 				JumpCalcul(false, JumpNormalHeight, 0, speedMoveNormale);
 			}
 		}
+
+
+
 	}
 
 	void JumpCalcul(bool haveDirection, float _jumpHeight, float _jumpDistance, float _speedInJump)
@@ -322,10 +338,12 @@ public class Player3D_Jumper : Controllable
 
 		jumpTimer += Time.fixedDeltaTime;
 
-		if(jumpTimer > jumpTime)
+		float pourcent = jumpTimer / jumpTime;
+
+		if(pourcent > 1)
 		{
 			isJumping = false;
-
+			pourcent = 1;
 			/*if(_rigidbody.velocity.y > 0) // ascending
 			{
 				//_rigidbody.UpCast();
@@ -339,42 +357,39 @@ public class Player3D_Jumper : Controllable
 				//_rigidbody.ForwardCast();
 			}*/
 		}
-		else
+
+		transitionPositionBefore = transitionPosition;
+
+		transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
+		transitionPosition.y += JumpHeight * jumpCurveOne.Evaluate(pourcent);
+
+		transitionFactor = transitionPosition - transitionPositionBefore;
+
+		//Appli mouvement
+		//_rigidbody.velocity = Time.fixedDeltaTime > 0f ? (transitionPosition - transitionPositionBefore) * MovePower / Time.fixedDeltaTime : Vector3.zero;
+		//_rigidbody.velocity = transitionPosition - transitionPositionBefore;
+		_rigidbody.MovePosition(transitionFactor + _rigidbody.position);
+		//_rigidbody.position = transitionPosition;
+
+		if(_rigidbody.velocity.y >= 0) //ascending
 		{
-			transitionPositionBefore = transitionPosition;
+			//_rigidbody.UpCast();
+			bool upTouch = false;
 
-			float pourcent = jumpTimer / jumpTime;
-
-			transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
-			transitionPosition.y += JumpHeight * jumpCurveOne.Evaluate(pourcent);
-
-			transitionFactor = transitionPosition - transitionPositionBefore;
-
-			//Appli mouvement
-			//_rigidbody.velocity = Time.fixedDeltaTime > 0f ? (transitionPosition - transitionPositionBefore) * MovePower / Time.fixedDeltaTime : Vector3.zero;
-			//_rigidbody.velocity = transitionPosition - transitionPositionBefore;
-			_rigidbody.MovePosition(transitionFactor + _rigidbody.position);
-			//_rigidbody.position = transitionPosition;
-
-			if(_rigidbody.velocity.y >= 0) //ascending
+			if(upTouch)
 			{
-				//_rigidbody.UpCast();
-				bool upTouch = false;
+				tempVector = _rigidbody.velocity;
+				tempVector.y = -tempVector.y;
+				_rigidbody.velocity = tempVector;
 
-				if(upTouch)
+				if(pourcent < 0.5f)
 				{
-					tempVector = _rigidbody.velocity;
-					tempVector.y = -tempVector.y;
-					_rigidbody.velocity = tempVector;
-
-					if(pourcent < 0.5f)
-					{
-						jumpTimer = jumpTime * (1 - pourcent);
-					}
+					jumpTimer = jumpTime * (1 - pourcent);
 				}
-				//_rigidbody.ForwardCast();
 			}
+			//_rigidbody.ForwardCast();
 		}
+
 	}
 
 	#endregion
@@ -405,7 +420,7 @@ public class Player3D_Jumper : Controllable
 		Gizmos.color = Color.red;
 		start = Vector3.Lerp(positionBeforeJump, positionTargetJump, 0.999f);
 		start.y += JumpHeight * jumpCurveOne.Evaluate(0.999f);
-		Gizmos.DrawLine(start, start + (end - start).normalized * 2);
+		Gizmos.DrawLine(start, start + (end - start).normalized * 3);
 	}
 #endif
 	#endregion

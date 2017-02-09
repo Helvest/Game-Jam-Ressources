@@ -3,10 +3,11 @@
 /// <summary>
 /// Manage menu and boutons functions
 /// </summary>
-public class MenuManager : MonoBehaviour
+public class MenuManager : Singleton<MenuManager>
 {
-	void Awake()
+	protected override void Awake()
 	{
+		base.Awake();
 		GameManager.State = GameManager.States.InMenu;
 	}
 

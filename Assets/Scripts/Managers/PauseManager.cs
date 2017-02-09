@@ -3,27 +3,8 @@
 /// <summary>
 /// Manage the pause system and canvas in pause state
 /// </summary>
-public class PauseManager : MonoBehaviour
+public class PauseManager : Singleton<PauseManager>
 {
-	private static PauseManager instance;
-
-	private PauseManager() { }
-
-	/// <summary>
-	/// Instance of the singeton PauseManager
-	/// </summary>
-	public static PauseManager Instance
-	{
-		get
-		{
-			if(instance == null)
-			{
-				instance = new PauseManager();
-			}
-			return instance;
-		}
-	}
-
 	/// <summary>
 	/// CanvasGroup who appart in pause
 	/// </summary>
@@ -73,17 +54,6 @@ public class PauseManager : MonoBehaviour
 
 			isPause = value;
 		}
-	}
-
-	void Awake()
-	{
-		if(instance)
-		{
-			Destroy(this);
-			return;
-		}
-
-		instance = this;
 	}
 
 	void Update()

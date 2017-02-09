@@ -3,7 +3,7 @@
 /// <summary>
 /// Manage the objects of the scene
 /// </summary>
-public class LevelManager : MonoBehaviour
+public class LevelManager : Singleton<LevelManager>
 {
 	public static Transform player, mainCamera;
 	public static Camera3D camera3D;

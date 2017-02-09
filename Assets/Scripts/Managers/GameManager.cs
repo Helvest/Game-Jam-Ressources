@@ -3,26 +3,8 @@
 /// <summary>
 /// Manage states of the game
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-	private static GameManager instance;
-
-	private GameManager(){}
-
-	/// <summary>
-	/// Instance of the singeton GameManager
-	/// </summary>
-	public static GameManager Instance
-	{
-		get
-		{
-			if(instance == null)
-			{
-				instance = new GameManager();
-			}
-			return instance;
-		}
-	}
 
 	/// <summary>
 	/// Possible states of the game
@@ -82,18 +64,6 @@ public class GameManager : MonoBehaviour
 
 			state = value;
 		}
-	}
-
-	void Awake()
-	{
-		if(instance)
-		{
-			Destroy(gameObject);
-			return;
-		}
-
-		instance = this;
-		DontDestroyOnLoad(gameObject);
 	}
 
 	/// <summary>
