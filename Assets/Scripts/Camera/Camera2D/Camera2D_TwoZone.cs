@@ -22,7 +22,6 @@ public class Camera2D_TwoZone : Camera2DLogic
 	private float objectifY = 0;
 	private sbyte DirectionX = 1;
     private sbyte DirectionY = 1;
-    private float currentVelocity;
 	private float lastDistanceX;
 	private float lastDistanceY;
 	private bool resetX = false;

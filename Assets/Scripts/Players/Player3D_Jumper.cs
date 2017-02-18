@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player3D_Jumper : Controllable
+public class Player3D_Jumper : PlayerScript
 {
 	private Rigidbody _rigidbody;
 
@@ -67,7 +67,7 @@ public class Player3D_Jumper : Controllable
 
 	protected override void Start()
 	{
-		ControlManager.AddControllableCharacters(this);
+		ControlManager.AddPlayerScriptCharacters(this);
 	}
 
 	void FixedUpdate()
@@ -86,8 +86,8 @@ public class Player3D_Jumper : Controllable
 			return;
 		}
 
-		direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCamera.right;
-		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCamera.forward;
+		direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCameraTrans.right;
+		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCameraTrans.forward;
 		direction.y = 0;
 		direction.Normalize();
 
@@ -180,13 +180,13 @@ public class Player3D_Jumper : Controllable
 
 	[Header("Jump Properties")]
 	[SerializeField]
-	private AnimationCurve jumpCurveOne;
+	private AnimationCurve jumpCurveDefault;
 
-	//[SerializeField]
-	//private AnimationCurve jumpCurveTwo;
+	[SerializeField]
+	private AnimationCurve jumpCurveLong;
 
-	//[SerializeField]
-	//private AnimationCurve jumpCurveThree;
+	[SerializeField]
+	private AnimationCurve jumpCurveOther;
 
 	[SerializeField]
 	private float jumpTime = 1;
@@ -361,7 +361,7 @@ public class Player3D_Jumper : Controllable
 		transitionPositionBefore = transitionPosition;
 
 		transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
-		transitionPosition.y += JumpHeight * jumpCurveOne.Evaluate(pourcent);
+		transitionPosition.y += JumpHeight * jumpCurveDefault.Evaluate(pourcent);
 
 		transitionFactor = transitionPosition - transitionPositionBefore;
 
@@ -409,7 +409,7 @@ public class Player3D_Jumper : Controllable
 		for(float i = 0; i <= 1; i += 0.05f)
 		{
 			end = Vector3.Lerp(positionBeforeJump, positionTargetJump, i);
-			end.y += JumpHeight * jumpCurveOne.Evaluate(i);
+			end.y += JumpHeight * jumpCurveDefault.Evaluate(i);
 
 			Gizmos.DrawLine(start, end);
 
@@ -419,7 +419,7 @@ public class Player3D_Jumper : Controllable
 		//Pronostique de direction près le saut
 		Gizmos.color = Color.red;
 		start = Vector3.Lerp(positionBeforeJump, positionTargetJump, 0.999f);
-		start.y += JumpHeight * jumpCurveOne.Evaluate(0.999f);
+		start.y += JumpHeight * jumpCurveDefault.Evaluate(0.999f);
 		Gizmos.DrawLine(start, start + (end - start).normalized * 3);
 	}
 #endif

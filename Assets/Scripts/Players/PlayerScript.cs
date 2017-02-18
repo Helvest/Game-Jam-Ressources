@@ -3,7 +3,7 @@
 /// <summary>
 /// Script with functions activate by inputs
 /// </summary>
-public class Controllable : MonoBehaviour
+public class PlayerScript : MonoBehaviour
 {
 	/// <summary>
 	/// Optimisation for call transform
@@ -22,12 +22,12 @@ public class Controllable : MonoBehaviour
 
 	protected virtual void Start()
 	{
-		ControlManager.AddControllableCharacters(this);
+		ControlManager.AddPlayerScriptCharacters(this);
 	}
 
 	protected virtual void OnDestroy()
 	{
-		ControlManager.RemoveControllableCharacters(this);
+		ControlManager.RemovePlayerScriptCharacters(this);
 	}
 
 

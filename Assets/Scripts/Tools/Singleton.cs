@@ -2,11 +2,11 @@
 
 public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 {
-	//[SerializeField]
-	private T defaultObject;
-
 	[SerializeField]
 	private bool dontDestroyOnLoad = true;
+
+	//[SerializeField]
+	//private T defaultObject;
 
 	private static T _instance;
 
@@ -25,16 +25,16 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 				if(_instance == null)
 				{
 					// if the defaultObject is set, Instanciate it in the scene and save it in the variable
-					if(_instance.defaultObject != null)
+					/*if(_instance.defaultObject != null)
 					{
 						_instance = Instantiate<T>(_instance.defaultObject);
 					}
 					// create a new object to populate the _instance
 					else
-					{
-						GameObject go = new GameObject(typeof(T).Name);
-						_instance = go.AddComponent<T>();
-					}
+					{*/
+					GameObject go = new GameObject(typeof(T).Name);
+					_instance = go.AddComponent<T>();
+					//}
 				}
 			}
 
@@ -50,12 +50,13 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 		}
 		else
 		{
-			//Debug.LogWarning("An object of type " + typeof(T).Name + " already exists, destroy " + gameObject.name);
 			Destroy(gameObject);
 			return;
 		}
 
 		if(dontDestroyOnLoad)
+		{
 			DontDestroyOnLoad(gameObject);
+		}
 	}
 }

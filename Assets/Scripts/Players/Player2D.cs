@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player2D : Controllable
+public class Player2D : PlayerScript
 {
 
 	protected override void Start()

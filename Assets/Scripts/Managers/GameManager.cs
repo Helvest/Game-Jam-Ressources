@@ -5,7 +5,6 @@
 /// </summary>
 public class GameManager : Singleton<GameManager>
 {
-
 	/// <summary>
 	/// Possible states of the game
 	/// </summary>
@@ -36,27 +35,15 @@ public class GameManager : Singleton<GameManager>
 				return;
 			}
 
-			switch(state)
-			{
-				case States.Other:
-					break;
-				case States.InMenu:
-					//Cursor.visible = false;
-					break;
-				case States.InGame:
-					break;
-				default:
-					break;
-			}
-
 			switch(value)
 			{
 				case States.Other:
 					break;
 				case States.InMenu:
-					//Cursor.visible = true;
+					Cursor.visible = true;
 					break;
 				case States.InGame:
+					Cursor.visible = false;
 					break;
 				default:
 					break;
@@ -81,5 +68,4 @@ public class GameManager : Singleton<GameManager>
 	{
 		LoadingScreen.instance.Load(sceneNumber);
 	}
-
 }

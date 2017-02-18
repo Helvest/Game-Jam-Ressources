@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class LookAtThat : MonoBehaviour
 {
-
 	[SerializeField]
 	private Transform target;
 

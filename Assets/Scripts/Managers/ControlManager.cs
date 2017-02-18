@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Manage advanced inputs and Controllable scripts
+/// Manage advanced inputs and PlayerScript scripts
 /// </summary>
 public class ControlManager : Singleton<ControlManager>
 {
@@ -26,51 +26,51 @@ public class ControlManager : Singleton<ControlManager>
 		}
 	}
 
-	private static Controllable[] controllableCharacters = new Controllable[0];
+	private static PlayerScript[] PlayerScriptCharacters = new PlayerScript[0];
 
 	/// <summary>
-	/// Add controllable objets on the liste of actifs controllables
+	/// Add PlayerScript objets on the liste of actifs PlayerScripts
 	/// </summary>
-	public static void AddControllableCharacters(Controllable controllable)
+	public static void AddPlayerScriptCharacters(PlayerScript PlayerScript)
 	{
-		int ccLength = controllableCharacters.Length;
+		int ccLength = PlayerScriptCharacters.Length;
 		//check is player is already in
 		for(int i = 0; i < ccLength; i++)
 		{
-			if(controllableCharacters[i] == controllable)
+			if(PlayerScriptCharacters[i] == PlayerScript)
 			{
 				return;
 			}
 		}
 
 		//expand array
-		Controllable[] tempsArray = new Controllable[ccLength + 1];
+		PlayerScript[] tempsArray = new PlayerScript[ccLength + 1];
 
 		for(int i = 0; i < ccLength; i++)
 		{
-			tempsArray[i] = controllableCharacters[i];
+			tempsArray[i] = PlayerScriptCharacters[i];
 		}
 
-		controllableCharacters = tempsArray;
+		PlayerScriptCharacters = tempsArray;
 
-		//add Controllable
-		controllableCharacters[ccLength] = controllable;
+		//add PlayerScript
+		PlayerScriptCharacters[ccLength] = PlayerScript;
 
-		controllable.isControlled = true;
+		PlayerScript.isControlled = true;
 	}
 
 	/// <summary>
-	/// Remove controllable objets on the liste of actifs controllables
+	/// Remove PlayerScript objets on the liste of actifs PlayerScripts
 	/// </summary>
-	public static void RemoveControllableCharacters(Controllable controllable)
+	public static void RemovePlayerScriptCharacters(PlayerScript PlayerScript)
 	{
-		int ccLength = controllableCharacters.Length;
+		int ccLength = PlayerScriptCharacters.Length;
 		int index = -1;
 
 		//check is player is in
 		for(int i = 0; i < ccLength; i++)
 		{
-			if(controllableCharacters[i] == controllable)
+			if(PlayerScriptCharacters[i] == PlayerScript)
 			{
 				index = i;
 				break;
@@ -83,24 +83,24 @@ public class ControlManager : Singleton<ControlManager>
 		}
 
 		//shrink array
-		Controllable[] tempsArray = new Controllable[ccLength - 1];
+		PlayerScript[] tempsArray = new PlayerScript[ccLength - 1];
 
-		//remove Controllable
+		//remove PlayerScript
 		for(int i = 0; i < ccLength; i++)
 		{
 			if(i < index)
 			{
-				tempsArray[i] = controllableCharacters[i];
+				tempsArray[i] = PlayerScriptCharacters[i];
 			}
 			else if(i > index)
 			{
-				tempsArray[i - 1] = controllableCharacters[i - 1];
+				tempsArray[i - 1] = PlayerScriptCharacters[i - 1];
 			}
 		}
 
-		controllableCharacters = tempsArray;
+		PlayerScriptCharacters = tempsArray;
 
-		controllable.isControlled = false;
+		PlayerScript.isControlled = false;
 	}
 
 	[SerializeField]
@@ -123,7 +123,7 @@ public class ControlManager : Singleton<ControlManager>
 	private static float[] leftDoubleTimer = new float[4];
 	private static bool[] leftWasPress = new bool[4];
 
-	private static Controllable controllable;
+	private static PlayerScript PlayerScript;
 	private static int playerID;
 
 	void Update()
@@ -134,65 +134,65 @@ public class ControlManager : Singleton<ControlManager>
 		}
 
 		//parcour la liste des joueurs
-		for(int i = 0; i < controllableCharacters.Length; i++)
+		for(int i = 0; i < PlayerScriptCharacters.Length; i++)
 		{
-			controllable = controllableCharacters[i];
+			PlayerScript = PlayerScriptCharacters[i];
 
-			if(!controllable)
+			if(!PlayerScript)
 			{
-				RemoveControllableCharacters(controllable);
+				RemovePlayerScriptCharacters(PlayerScript);
 				continue;
 			}
-			else if(!controllable.isControlled)
+			else if(!PlayerScript.isControlled)
 			{
-				RemoveControllableCharacters(controllable);
+				RemovePlayerScriptCharacters(PlayerScript);
 				continue;
 			}
 
-			playerID = controllable.playerID;
+			playerID = PlayerScript.playerID;
 
 			//ActionA
 			if(Input.GetButtonDown("ActionA_" + playerID))
 			{
-				controllable.UseActionA_Press();
+				PlayerScript.UseActionA_Press();
 			}
 
 			if(Input.GetButtonUp("ActionA_" + playerID))
 			{
-				controllable.UseActionA_Release();
+				PlayerScript.UseActionA_Release();
 			}
 
 			//ActionB
 			if(Input.GetButtonDown("ActionB_" + playerID))
 			{
-				controllable.UseActionB_Press();
+				PlayerScript.UseActionB_Press();
 			}
 
 			if(Input.GetButtonUp("ActionB_" + playerID))
 			{
-				controllable.UseActionB_Release();
+				PlayerScript.UseActionB_Release();
 			}
 
 			//ActionX
 			if(Input.GetButtonDown("ActionX_" + playerID))
 			{
-				controllable.UseActionX_Press();
+				PlayerScript.UseActionX_Press();
 			}
 
 			if(Input.GetButtonUp("ActionX_" + playerID))
 			{
-				controllable.UseActionX_Release();
+				PlayerScript.UseActionX_Release();
 			}
 
 			//ActionY
 			if(Input.GetButtonDown("ActionY_" + playerID))
 			{
-				controllable.UseActionY_Press();
+				PlayerScript.UseActionY_Press();
 			}
 
 			if(Input.GetButtonUp("ActionY_" + playerID))
 			{
-				controllable.UseActionY_Release();
+				PlayerScript.UseActionY_Release();
 			}
 
 			//Up
@@ -202,12 +202,12 @@ public class ControlManager : Singleton<ControlManager>
 
 				if(Input.GetButtonDown("DPadY_" + playerID) && Input.GetAxisRaw("DPadY_" + playerID) == 1)
 				{
-					controllable.UpDouble();
+					PlayerScript.UpDouble();
 					upWasPress[i] = false;
 				}
 				else if(upDoubleTimer[i] <= 0)
 				{
-					controllable.Up();
+					PlayerScript.Up();
 					upWasPress[i] = false;
 				}
 			}
@@ -224,12 +224,12 @@ public class ControlManager : Singleton<ControlManager>
 
 				if(Input.GetButtonDown("DPadY_" + playerID) && Input.GetAxisRaw("DPadY_" + playerID) == -1)
 				{
-					controllable.DownDouble();
+					PlayerScript.DownDouble();
 					downWasPress[i] = false;
 				}
 				else if(downDoubleTimer[i] <= 0)
 				{
-					controllable.Down();
+					PlayerScript.Down();
 					downWasPress[i] = false;
 				}
 			}
@@ -246,12 +246,12 @@ public class ControlManager : Singleton<ControlManager>
 
 				if(Input.GetButtonDown("DPadX_" + playerID) && Input.GetAxisRaw("DPadX_" + playerID) == 1)
 				{
-					controllable.RightDouble();
+					PlayerScript.RightDouble();
 					rightWasPress[i] = false;
 				}
 				else if(rightDoubleTimer[i] <= 0)
 				{
-					controllable.Right();
+					PlayerScript.Right();
 					rightWasPress[i] = false;
 				}
 			}
@@ -268,12 +268,12 @@ public class ControlManager : Singleton<ControlManager>
 
 				if(Input.GetButtonDown("DPadX_" + playerID) && Input.GetAxisRaw("DPadX_" + playerID) == -1)
 				{
-					controllable.LeftDouble();
+					PlayerScript.LeftDouble();
 					leftWasPress[i] = false;
 				}
 				else if(leftDoubleTimer[i] <= 0)
 				{
-					controllable.Left();
+					PlayerScript.Left();
 					leftWasPress[i] = false;
 				}
 			}

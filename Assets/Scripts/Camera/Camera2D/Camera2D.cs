@@ -3,9 +3,8 @@
 /// <summary>
 /// Script for the camera for 2D comportement
 /// </summary>
-public class Camera2D : MonoBehaviour
+public class Camera2D : CameraScript
 {
-	private bool IFollowA = true;
 	private Point2D pointA;
 	private Point2D pointB;
 
@@ -15,37 +14,11 @@ public class Camera2D : MonoBehaviour
 
 	private Vector3 nPosition;
 
-	private bool isTransition = false;
-	private EasingPart easingPart;
-	private EasingType easingType;
-
-	float easeTime;
-	float easeTimer;
-
-	/// <summary>
-	/// Move camera with ease to a new target
-	/// </summary>
-	/// <param name="targetTransforme">new target</param>
-	/// <param name="time">time of transition</param>
-	/// <param name="part">EasingPart</param>
-	/// <param name="type">EasingType</param>
-	public void SetTargetWishEase(Transform targetTransforme, float time = 1, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
-	{
-		isTransition = true;
-
-		easingPart = part;
-		easingType = type;
-		easeTime = time;
-		easeTimer = 0;
-
-		SetTarget(targetTransforme);
-	}
-
 	/// <summary>
 	/// Give to the camera a new target to follow without transition
 	/// </summary>
 	/// <param name="targetTransforme">new target</param>
-	public void SetTarget(Transform targetTransforme)
+	public override void SetTarget(Transform targetTransforme)
 	{
 		targets = targetTransforme.GetComponents<Camera2DLogic>();
 
@@ -85,7 +58,7 @@ public class Camera2D : MonoBehaviour
 		}
 	}
 
-	private void Awake()
+	protected override void Awake()
 	{
 #if UNITY_EDITOR
 		isPlay = true;
@@ -134,10 +107,6 @@ public class Camera2D : MonoBehaviour
 	}
 
 #if UNITY_EDITOR
-	private bool isPlay = false;
-	private Transform player;
-	private Vector3 playerPosition;
-
 	void EditorSetTarget()
 	{
 		pointA = new Point2D();

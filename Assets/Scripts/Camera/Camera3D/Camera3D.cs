@@ -3,11 +3,8 @@
 /// <summary>
 /// Script for the camera for 3D comportement
 /// </summary>
-public class Camera3D : MonoBehaviour
+public class Camera3D : CameraScript
 {
-	private Transform _transform;
-
-	private bool IFollowA = false;
 	private Point3D pointA;
 	private Point3D pointB;
 
@@ -15,14 +12,7 @@ public class Camera3D : MonoBehaviour
 	private Point3D pointPre;
 	private Camera3DLogic[] targets;
 
-	private bool isTransition = false;
-	private EasingPart easingPart;
-	private EasingType easingType;
-
-	float easeTime;
-	float easeTimer;
-
-	private void Awake()
+	protected override void Awake()
 	{
 		_transform = transform;
 
@@ -52,29 +42,10 @@ public class Camera3D : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Move camera with ease to a new target
-	/// </summary>
-	/// <param name="targetTransforme">new target</param>
-	/// <param name="time">time of transition</param>
-	/// <param name="part">EasingPart</param>
-	/// <param name="type">EasingType</param>
-	public void SetTargetWishEase(Transform targetTransforme, float time = 1, EasingPart part = EasingPart.NoEase, EasingType type = EasingType.Linear)
-	{
-		isTransition = true;
-
-		easingPart = part;
-		easingType = type;
-		easeTime = time;
-		easeTimer = 0;
-
-		SetTarget(targetTransforme);
-	}
-
-	/// <summary>
 	/// Give to the camera a new target to follow without transition
 	/// </summary>
 	/// <param name="targetTransforme">new target</param>
-	public void SetTarget(Transform targetTransforme)
+	public override void SetTarget(Transform targetTransforme)
 	{
 		targets = targetTransforme.GetComponents<Camera3DLogic>();
 
@@ -149,11 +120,7 @@ public class Camera3D : MonoBehaviour
 	}
 
 #if UNITY_EDITOR
-	private bool isPlay = false;
-	private Transform player;
-	private Vector3 playerPosition;
-
-	void EditorSetTarget()
+	private void EditorSetTarget()
 	{
 		if(!pointA)
 		{

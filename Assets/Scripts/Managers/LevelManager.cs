@@ -5,25 +5,37 @@
 /// </summary>
 public class LevelManager : Singleton<LevelManager>
 {
-	public static Transform player, mainCamera;
-	public static Camera3D camera3D;
+	public static Transform playerTrans, mainCameraTrans;
+
+	public static PlayerScript playerScript;
+	public static CameraScript cameraScript;
+
 	public static Vector3 lastSavedPosition;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		GameManager.State = GameManager.States.InGame;
+		playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
+		mainCameraTrans = Camera.main.transform;
+	}
 
 	void Start()
 	{
-		GameManager.State = GameManager.States.InGame;
+		if(playerTrans)
+		{
+			lastSavedPosition = playerTrans.position;
+		}
 
-		player = GameObject.FindGameObjectWithTag("Player").transform;
-		lastSavedPosition = player.position;
-
-		mainCamera = Camera.main.transform;
-
-		camera3D = mainCamera.GetComponent<Camera3D>();
-		camera3D.SetTarget(player);
+		cameraScript = mainCameraTrans.GetComponent<CameraScript>();
+		if(cameraScript && playerTrans)
+		{
+			cameraScript.SetTarget(playerTrans);
+		}
 	}
 
 	public static void Respawn()
 	{
-		player.position = lastSavedPosition;
+		playerTrans.position = lastSavedPosition;
 	}
 }

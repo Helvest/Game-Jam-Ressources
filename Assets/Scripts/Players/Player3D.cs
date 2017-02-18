@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player3D : Controllable
+public class Player3D : PlayerScript
 {
 	private Rigidbody _rigidbody;
 
@@ -40,7 +40,7 @@ public class Player3D : Controllable
 
 	protected override void Start()
 	{
-		ControlManager.AddControllableCharacters(this);
+		ControlManager.AddPlayerScriptCharacters(this);
 	}
 
 	private float speedMove;
@@ -75,8 +75,8 @@ public class Player3D : Controllable
 			speedRot = speedRotNormale;
 		}
 
-		Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCamera.right;
-		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCamera.forward;
+		Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCameraTrans.right;
+		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCameraTrans.forward;
 		direction.y = 0;
 		direction = direction.normalized * speedMove;
 
