@@ -30,7 +30,6 @@ public class PlayerScript : MonoBehaviour
 		ControlManager.RemovePlayerScriptCharacters(this);
 	}
 
-
 	public virtual void UseActionA_Press() { }
 	
 	public virtual void UseActionA_Release() { }

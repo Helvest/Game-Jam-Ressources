@@ -104,13 +104,13 @@ public class Player3D_Jumper : PlayerScript
 		{
 			if(isCrouch)
 			{
-				Debug.Log("isCrouch");
+				//Debug.Log("isCrouch");
 				speedMove = speedMoveCrouch;
 				speedRot = speedRotCrouch;
 			}
 			else if(isRuning && isMoving)
 			{
-				Debug.Log("isRuning");
+				//Debug.Log("isRuning");
 				speedMove = speedMoveRun;
 				speedRot = speedRotRun;
 			}
@@ -122,30 +122,29 @@ public class Player3D_Jumper : PlayerScript
 		}
 
 		//check ground
-		if(_rigidbody.velocity.y > 1 && isJumping)
+		if(_rigidbody.velocity.y >= 0 && isJumping)
 		{
-			Debug.Log("not Grounded");
 			IsGrounded = false;
+			//_rigidbody.useGravity = false;
 		}
 		else
 		{
 			IsGrounded = Physics.CheckBox(_rigidbody.position + checkBoxGroundOrig, checkBoxGround, _rigidbody.rotation, layerMaskGround);
-		}
+			if(IsGrounded && isJumping)
+			{
+				isJumping = false;
+			}
 
-		if(IsGrounded)
-		{
-			isJumping = false;
-		}
+			//Gravity
+			if(!IsGrounded && !isJumping)
+			{
+				tempVector = _rigidbody.velocity;
+				tempVector.y -= gravity * Time.fixedDeltaTime;
+				_rigidbody.velocity = tempVector;
 
-		//Gravity
-		if(!isJumping)
-		{
-			tempVector = _rigidbody.velocity;
-			tempVector.y -= gravity * Time.fixedDeltaTime;
-			_rigidbody.velocity = tempVector;
-			//_rigidbody.MovePosition(_transform.up * -5 * Time.fixedDeltaTime + _rigidbody.position);
+				//_rigidbody.useGravity = true;
+			}
 		}
-
 
 		if(isMoving)
 		{
@@ -164,18 +163,18 @@ public class Player3D_Jumper : PlayerScript
 
 	public override void UseActionB_Press()
 	{
-		Debug.Log("UseActionB_Press");
+		//Debug.Log("UseActionB_Press");
 	}
 
 	public override void UseActionX_Press()
 	{
-		Debug.Log("UseActionX_Press");
+		//Debug.Log("UseActionX_Press");
 
 	}
 
 	public override void UseActionY_Press()
 	{
-		Debug.Log("UseActionY_Press");
+		//Debug.Log("UseActionY_Press");
 	}
 
 	[Header("Jump Properties")]
@@ -233,8 +232,6 @@ public class Player3D_Jumper : PlayerScript
 	private Vector3 positionBeforeJump;
 	private Vector3 positionTargetJump;
 
-
-
 	#region JUMPS
 
 	public void Jump()
@@ -282,9 +279,6 @@ public class Player3D_Jumper : PlayerScript
 				JumpCalcul(false, JumpNormalHeight, 0, speedMoveNormale);
 			}
 		}
-
-
-
 	}
 
 	void JumpCalcul(bool haveDirection, float _jumpHeight, float _jumpDistance, float _speedInJump)
@@ -313,82 +307,66 @@ public class Player3D_Jumper : PlayerScript
 		isJumping = true;
 	}
 
-	void StopJump(Vector3 newVector)
-	{
-		if(isJumping)
-		{
-			jumpTimer = jumpTime + 1;
-			_rigidbody.velocity = newVector;
-		}
-	}
-
 	public void JumpRebound()
 	{
-		Vector3 tempVector = _rigidbody.velocity;
-		tempVector.y = Mathf.Abs(tempVector.y);
-		_rigidbody.velocity = tempVector;
+		JumpCalcul(false, JumpBounceHeight, 0, speedMove);
 	}
 
-	Vector3 transitionPosition;
-	Vector3 transitionPositionBefore;
-	Vector3 transitionFactor;
+	private Vector3 transitionPosition;
+	private Vector3 transitionPositionBefore;
+	private Vector3 transitionFactor;
 
 	private void Jumping()
 	{
-
 		jumpTimer += Time.fixedDeltaTime;
 
 		float pourcent = jumpTimer / jumpTime;
 
-		if(pourcent > 1)
-		{
-			isJumping = false;
-			pourcent = 1;
-			/*if(_rigidbody.velocity.y > 0) // ascending
-			{
-				//_rigidbody.UpCast();
-				bool upTouch = false;
-				if(upTouch)
-				{
-					tempVector = _rigidbody.velocity;
-					tempVector.y = -tempVector.y;
-					_rigidbody.velocity = tempVector;
-				}
-				//_rigidbody.ForwardCast();
-			}*/
-		}
-
-		transitionPositionBefore = transitionPosition;
-
-		transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
-		transitionPosition.y += JumpHeight * jumpCurveDefault.Evaluate(pourcent);
-
-		transitionFactor = transitionPosition - transitionPositionBefore;
-
-		//Appli mouvement
-		//_rigidbody.velocity = Time.fixedDeltaTime > 0f ? (transitionPosition - transitionPositionBefore) * MovePower / Time.fixedDeltaTime : Vector3.zero;
-		//_rigidbody.velocity = transitionPosition - transitionPositionBefore;
-		_rigidbody.MovePosition(transitionFactor + _rigidbody.position);
-		//_rigidbody.position = transitionPosition;
-
-		if(_rigidbody.velocity.y >= 0) //ascending
+		if(pourcent < 0.5f) //ascending
 		{
 			//_rigidbody.UpCast();
 			bool upTouch = false;
 
 			if(upTouch)
 			{
-				tempVector = _rigidbody.velocity;
-				tempVector.y = -tempVector.y;
-				_rigidbody.velocity = tempVector;
+				jumpTimer = jumpTime * (1 - pourcent);
 
-				if(pourcent < 0.5f)
-				{
-					jumpTimer = jumpTime * (1 - pourcent);
-				}
+				/*	tempVector = _rigidbody.velocity;
+					tempVector.y = -tempVector.y;
+					_rigidbody.velocity = tempVector;*/
 			}
 			//_rigidbody.ForwardCast();
 		}
+
+		if(pourcent >= 1)
+		{
+			isJumping = false;
+
+			pourcent = 1 - Time.fixedDeltaTime;
+
+			transitionPositionBefore = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
+			transitionPositionBefore.y += JumpHeight * jumpCurveDefault.Evaluate(pourcent);
+
+			transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, 1);
+		}
+		else
+		{
+			transitionPositionBefore = transitionPosition;
+
+			transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
+			transitionPosition.y += JumpHeight * jumpCurveDefault.Evaluate(pourcent);
+		}
+
+		transitionFactor = transitionPosition - transitionPositionBefore;
+
+		//Appli mouvement
+		//_rigidbody.velocity = Time.fixedDeltaTime > 0f ? (transitionPosition - transitionPositionBefore) * MovePower / Time.fixedDeltaTime : Vector3.zero;
+		tempVector = transitionFactor;
+		tempVector.y = 0;
+		_rigidbody.MovePosition(tempVector + _rigidbody.position);
+		transitionFactor.x = 0;
+		transitionFactor.z = 0;
+		_rigidbody.velocity = transitionFactor / Time.fixedDeltaTime;
 
 	}
 
