@@ -22,7 +22,7 @@ public class Player3D_Ship : PlayerScript
 
 	private bool cruiseMode = false;
 
-	private Vector3 tempVector3 = Vector3.zero;
+	//private Vector3 tempVector3 = Vector3.zero;
 
 	//private Animator animator;
 
