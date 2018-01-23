@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player3D : PlayerScript
 {
-	private Rigidbody _rigidbody;
+	public Rigidbody _rigidbody { get; protected set; }
 
 	[SerializeField]
 	private float speedMoveNormale = 9;
@@ -38,33 +38,28 @@ public class Player3D : PlayerScript
 		_rigidbody = GetComponent<Rigidbody>();
 	}
 
-	protected override void Start()
-	{
-		ControlManager.AddPlayerScriptCharacters(this);
-	}
-
 	private float speedMove;
 	private float speedRot;
 
 	void FixedUpdate()
 	{
-		if(!isControlled || PauseManager.IsPause)
+		if (!isControlled || PauseManager.Instance.IsPause)
 		{
 			return;
 		}
 
 		//Game over
-		if(_rigidbody.position.y <= -10)
+		if (_rigidbody.position.y <= -10)
 		{
 			_rigidbody.velocity = Vector3.zero;
-			LevelManager.Respawn();
+			LevelManager.Instance.Respawn();
 			return;
 		}
 
 		//check ground
 		canJump = Physics.CheckSphere(_rigidbody.position + (Vector3.up * sphereCastGroundOrig), sphereCastGround, layerMaskGround);
 
-		if(!canJump)
+		if (!canJump)
 		{
 			speedMove = speedMoveInAir;
 			speedRot = speedRotInAir;
@@ -75,23 +70,23 @@ public class Player3D : PlayerScript
 			speedRot = speedRotNormale;
 		}
 
-		Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCameraTrans.right;
-		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCameraTrans.forward;
+		Vector3 direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.Instance.mainCameraTrans.right;
+		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.Instance.mainCameraTrans.forward;
 		direction.y = 0;
 		direction = direction.normalized * speedMove;
 
-		if(direction.x != 0 || direction.z != 0)
+		if (direction.x != 0 || direction.z != 0)
 		{
 			_rigidbody.MoveRotation(Quaternion.RotateTowards(_rigidbody.rotation, Quaternion.LookRotation(direction), speedRot * Time.fixedDeltaTime));
 
-			if(canJump)
+			if (canJump)
 			{
 				_rigidbody.MovePosition(direction * Time.fixedDeltaTime + _rigidbody.position);
 			}
 		}
 
 		//in air the player don't add externe velocity
-		if(!canJump)
+		if (!canJump)
 		{
 			direction.y = _rigidbody.velocity.y;
 			_rigidbody.velocity = direction;
@@ -100,14 +95,14 @@ public class Player3D : PlayerScript
 
 	void Jump()
 	{
-		if(canJump || canDoubleJump)
+		if (canJump || canDoubleJump)
 		{
-			if(canDoubleJump)
+			if (canDoubleJump)
 			{
 				canDoubleJump = false;
 			}
 
-			if(canJump)
+			if (canJump)
 			{
 				canDoubleJump = true;
 			}
@@ -118,23 +113,10 @@ public class Player3D : PlayerScript
 		}
 	}
 
-	public override void UseActionA_Press()
+	/*public override void UseActionA_Press()
 	{
 		Jump();
-	}
-
-	public override void UseActionB_Press()
-	{
-	}
-
-	public override void UseActionX_Press()
-	{
-	}
-
-	public override void UseActionY_Press()
-	{
-	}
-
+	}*/
 
 #if UNITY_EDITOR
 	void OnDrawGizmos()

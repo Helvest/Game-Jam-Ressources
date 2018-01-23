@@ -5,10 +5,9 @@
 /// </summary>
 public class MenuManager : Singleton<MenuManager>
 {
-	protected override void Awake()
+	protected override void OnAwake()
 	{
-		base.Awake();
-		GameManager.State = GameManager.States.InMenu;
+		GameManager.Instance.State = GameManager.States.InMenu;
 	}
 
 	/// <summary>
@@ -16,7 +15,7 @@ public class MenuManager : Singleton<MenuManager>
 	/// </summary>
 	public void LoadScene(string sceneName)
 	{
-		LoadingScreen.instance.Load(sceneName);
+		LoadingScreen.Instance.Load(sceneName);
 	}
 
 	/// <summary>
@@ -24,6 +23,6 @@ public class MenuManager : Singleton<MenuManager>
 	/// </summary>
 	public void LoadScene(int sceneNumber)
 	{
-		LoadingScreen.instance.Load(sceneNumber);
+		LoadingScreen.Instance.Load(sceneNumber);
 	}
 }

@@ -5,58 +5,57 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 	[SerializeField]
 	private bool dontDestroyOnLoad = true;
 
-	//[SerializeField]
-	//private T defaultObject;
-
-	private static T _instance;
+	private static T _Instance;
 
 	/// <summary>
 	/// The Singleton instance, if don't exist create a new one
 	/// </summary>
-	public static T instance
+	public static T Instance
 	{
 		get
 		{
 			// search for an object of type T in the scene
-			if(_instance == null)
+			if(_Instance == null)
 			{
-				_instance = FindObjectOfType<T>();
+				/*_Instance = FindObjectOfType<T>();
 
-				if(_instance == null)
+				if(_Instance == null)
 				{
-					// if the defaultObject is set, Instanciate it in the scene and save it in the variable
-					/*if(_instance.defaultObject != null)
-					{
-						_instance = Instantiate<T>(_instance.defaultObject);
-					}
-					// create a new object to populate the _instance
-					else
-					{*/
 					GameObject go = new GameObject(typeof(T).Name);
-					_instance = go.AddComponent<T>();
-					//}
-				}
+					_Instance = go.AddComponent<T>();
+				}*/
+
+				Debug.LogError("Instance is null");
 			}
 
-			return _instance;
+			return _Instance;
 		}
 	}
 
-	protected virtual void Awake()
+	public Transform _transform { get; private set; }
+
+	private void Awake()
 	{
-		if(_instance == null)
-		{
-			_instance = (T)this;
-		}
-		else
+		if(_Instance != null)
 		{
 			Destroy(gameObject);
+			DestroyImmediate(this);
 			return;
 		}
 
-		if(dontDestroyOnLoad)
+		_Instance = (T)this;
+		_transform = transform;
+
+		if (dontDestroyOnLoad)
 		{
 			DontDestroyOnLoad(gameObject);
 		}
+
+		OnAwake();
+	}
+
+	protected virtual void OnAwake()
+	{
+
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player3D_FPS : PlayerScript
 {
-	private Rigidbody _rigidbody;
+	public Rigidbody _rigidbody { get; protected set; }
 
 	[SerializeField]
 	private float speedMove = 9;
@@ -15,34 +15,29 @@ public class Player3D_FPS : PlayerScript
 	[SerializeField]
 	private Transform Head;
 
-	private List<ObjectListe> inventaire = new  List<ObjectListe>();
+	private List<ObjectListe> inventaire = new List<ObjectListe>();
 
 	protected override void Awake()
 	{
 		base.Awake();
 		_rigidbody = GetComponent<Rigidbody>();
 
-		if(!Head)
+		if (!Head)
 		{
-			Head = _transform.FindChild("Head");
+			Head = _transform.Find("Head");
 		}
-		if(!Head)
+		if (!Head)
 		{
 			Debug.Log("No Head Transform Find !");
 		}
 
 	}
 
-	protected override void Start()
-	{
-		ControlManager.AddPlayerScriptCharacters(this);
-	}
-
 	private Vector3 direction;
 
 	void FixedUpdate()
 	{
-		if(!isControlled || PauseManager.IsPause)
+		if (!isControlled || PauseManager.Instance.IsPause)
 		{
 			return;
 		}
@@ -55,13 +50,13 @@ public class Player3D_FPS : PlayerScript
 				return;
 			}*/
 
-		direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCameraTrans.right +
-					Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCameraTrans.forward;
+		direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.Instance.mainCameraTrans.right +
+					Input.GetAxis("Vertical_" + playerID) * LevelManager.Instance.mainCameraTrans.forward;
 		direction.y = 0;
 
 		_rigidbody.velocity = direction.normalized * speedMove;
 
-		Head.rotation = LevelManager.mainCameraTrans.rotation;
+		Head.rotation = LevelManager.Instance.mainCameraTrans.rotation;
 	}
 
 	private void Update()
@@ -87,33 +82,33 @@ public class Player3D_FPS : PlayerScript
 
 	private void Aim()
 	{
-		Physics.Linecast(LevelManager.mainCameraTrans.position, LevelManager.mainCameraTrans.position + LevelManager.mainCameraTrans.forward * interactDistance, out hit, interactableLayerMask);
+		Physics.Linecast(LevelManager.Instance.mainCameraTrans.position, LevelManager.Instance.mainCameraTrans.position + LevelManager.Instance.mainCameraTrans.forward * interactDistance, out hit, interactableLayerMask);
 
 		checkInteractable = false;
 
-		if(hit.collider)
+		if (hit.collider)
 		{
 			interactable = hit.collider.GetComponent<Interactable>();
 
-			if(!interactable)
+			if (!interactable)
 			{
 				interactable = hit.collider.GetComponentInParent<Interactable>();
 			}
 
-			if(interactable)
+			if (interactable)
 			{
 				checkInteractable = true;
 
-					lastType = interactable.type;
-					Cross.SetActive(false);
+				lastType = interactable.type;
+				Cross.SetActive(false);
 
-					//HUD affiche interact
-					switch(lastType)
-					{
-						case InteractableEnum.Prendre:
-							//Icon.Play("Icon_Prendre");
-							break;
-						case InteractableEnum.Interagir:
+				//HUD affiche interact
+				switch (lastType)
+				{
+					case InteractableEnum.Prendre:
+						//Icon.Play("Icon_Prendre");
+						break;
+					case InteractableEnum.Interagir:
 						/*	Interactable scriptInteract = interactable;
 							bool check = false;
 							if(scriptInteract.needObject)
@@ -139,7 +134,7 @@ public class Player3D_FPS : PlayerScript
 							Icon.Play("Icon_Interagir");
 							*/
 						break;
-						case InteractableEnum.Poser:
+					case InteractableEnum.Poser:
 						/*	InteractPoser scriptPoser = interactable;
 
 							bool checkPoser;
@@ -178,29 +173,29 @@ public class Player3D_FPS : PlayerScript
 							}
 
 							Icon.Play("Icon_Poser");*/
-							break;
-					}
-				
+						break;
+				}
+
 
 				//Input
-				if(Input.GetButtonDown("ActionA_" + playerID))
+				if (Input.GetButtonDown("ActionA_" + playerID))
 				{
 					interactable.Interagir();
 				}
 			}
 		}
 
-		if(checkInteractable && lastType != InteractableEnum.Nothing)
+		if (checkInteractable && lastType != InteractableEnum.Nothing)
 		{
 			lastType = InteractableEnum.Nothing;
 			//Icon.Play("Icon_Default");
 			//Cross.SetActive(false);
 		}
 
-		if(updateInventory)
+		if (updateInventory)
 		{
 			updateInventory = false;
-			//HUDManager.instance.UpdateHUD(inventaire);
+			//HUDManager.Instance.UpdateHUD(inventaire);
 		}
 	}
 
@@ -208,7 +203,7 @@ public class Player3D_FPS : PlayerScript
 
 	public void Prendre(ObjectListe nameObject)
 	{
-		if(!inventaire.Contains(nameObject))
+		if (!inventaire.Contains(nameObject))
 		{
 			inventaire.Add(nameObject);
 		}
@@ -220,7 +215,7 @@ public class Player3D_FPS : PlayerScript
 	{
 		bool test = inventaire.Contains(nameObject);
 
-		if(test)
+		if (test)
 		{
 			inventaire.Remove(nameObject);
 		}
@@ -261,9 +256,9 @@ public class Player3D_FPS : PlayerScript
 	{
 		//Head = transform.FindChild("Head");
 		Gizmos.color = Color.red;
-		if(LevelManager.mainCameraTrans)
+		if (LevelManager.Instance.mainCameraTrans)
 		{
-			Gizmos.DrawLine(LevelManager.mainCameraTrans.position, LevelManager.mainCameraTrans.position + LevelManager.mainCameraTrans.forward * interactDistance);
+			Gizmos.DrawLine(LevelManager.Instance.mainCameraTrans.position, LevelManager.Instance.mainCameraTrans.position + LevelManager.Instance.mainCameraTrans.forward * interactDistance);
 		}
 	}
 #endif

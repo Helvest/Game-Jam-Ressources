@@ -47,7 +47,14 @@ public class Camera2D_TwoZone : Camera2DLogic
 	/// <param name="point2D">Object for 2D position and adjustment</param>
 	public override void UpdatePoint(ref Point2D point2D)
     {
-        if (plan == EnumCameraPlan.X || plan == EnumCameraPlan.XY)
+#if UNITY_EDITOR
+		if (point2D == null)
+			return;
+
+		_transform = transform;
+#endif
+
+		if (plan == EnumCameraPlan.X || plan == EnumCameraPlan.XY)
         {
 			point2D.position.x = Calcul(_transform.position.x, point2D.position.x, ref DirectionX, ref lastDistanceX, ref resetX, ref objectifX, ref waitX, ref antiObjectifX);
 		}
@@ -146,7 +153,7 @@ public class Camera2D_TwoZone : Camera2DLogic
 			);
 			gizPos.x = objectifX;
 		}
-			else
+		
 		if (plan == EnumCameraPlan.Y || plan == EnumCameraPlan.XY)
 		{
 			Debug.DrawLine(

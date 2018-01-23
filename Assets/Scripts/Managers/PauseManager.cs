@@ -11,11 +11,11 @@ public class PauseManager : Singleton<PauseManager>
 	[SerializeField]
 	private CanvasGroup canvasGroup;
 
-	private static bool isPause = false;
+	private bool isPause = false;
 	/// <summary>
 	/// On/Off pause state
 	/// </summary>
-	public static bool IsPause
+	public bool IsPause
 	{
 		get
 		{
@@ -34,10 +34,10 @@ public class PauseManager : Singleton<PauseManager>
 				Cursor.visible = true;
 				Time.timeScale = 0;
 
-				if(instance.canvasGroup)
+				if(canvasGroup)
 				{
-					instance.canvasGroup.alpha = 1;
-					instance.canvasGroup.gameObject.SetActive(true);
+					canvasGroup.alpha = 1;
+					canvasGroup.gameObject.SetActive(true);
 				}
 			}
 			else
@@ -45,10 +45,10 @@ public class PauseManager : Singleton<PauseManager>
 				Cursor.visible = false;
 				Time.timeScale = 1;
 
-				if(instance.canvasGroup)
+				if(canvasGroup)
 				{
-					instance.canvasGroup.alpha = 0;
-					instance.canvasGroup.gameObject.SetActive(false);
+					canvasGroup.alpha = 0;
+					canvasGroup.gameObject.SetActive(false);
 				}
 			}
 
@@ -58,7 +58,7 @@ public class PauseManager : Singleton<PauseManager>
 
 	void Update()
 	{
-		if(GameManager.State == GameManager.States.InGame)
+		if(GameManager.Instance.State == GameManager.States.InGame)
 		{
 			if(Input.GetButtonDown("Pause"))
 			{

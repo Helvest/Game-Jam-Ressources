@@ -4,43 +4,72 @@ using UnityEngine;
 
 public class Player3D_Jumper : PlayerScript
 {
-	private Rigidbody _rigidbody;
+	public Rigidbody _rigidbody { get; protected set; }
 
 	[SerializeField]
-	private float gravity = 10;
+	private float gravity = 0.1f;
+	[SerializeField]
+	private float maxFallSpeed = -2.0f;
 
 	private float speedMove;
 	private float speedRot;
 
 	[SerializeField]
-	private float speedMoveNormale = 4;
-	[SerializeField]
-	private float speedRotNormale = 360;
+	private float speedForce = 15.0f;
 
 	[SerializeField]
-	private float speedMoveRun = 6;
+	private float speedMoveNormale = 4.0f;
 	[SerializeField]
-	private float speedRotRun = 360;
+	private float speedRotNormale = 360.0f;
 
 	[SerializeField]
-	private float speedMoveCrouch = 4;
+	private float speedMoveRun = 6.0f;
 	[SerializeField]
-	private float speedRotCrouch = 360;
+	private float speedRotRun = 360.0f;
+
+	[SerializeField]
+	private float speedMoveCrouch = 4.0f;
+	[SerializeField]
+	private float speedRotCrouch = 360.0f;
 
 	[SerializeField]
 	private LayerMask layerMaskGround;
+
 	[SerializeField]
-	private Vector3 checkBoxGroundOrig = new Vector3(0,-1,0);
+	private Vector3 checkBoxGroundOrig = new Vector3(0.0f, -1.0f, 0.0f);
 	[SerializeField]
-	private Vector3 checkBoxGround = new Vector3(0.15f,0.15f,0.15f);
+	private Vector3 checkBoxGround = new Vector3(0.15f, 0.15f, 0.15f);
+
+	[SerializeField]
+	private Vector3 checkBoxForwardOrig = new Vector3(0.0f, 0.0f, 0.5f);
+	[SerializeField]
+	private Vector3 checkBoxForward = new Vector3(0.15f, 0.15f, 0.15f);
+	[SerializeField]
+	private float checkBoxForwardDistance = 0.3f;
+
+	[SerializeField]
+	private Vector3 checkBoxBackwardOrig = new Vector3(0.0f, 0.0f, -0.5f);
+	[SerializeField]
+	private Vector3 checkBoxBackward = new Vector3(0.15f, 0.15f, 0.15f);
+	[SerializeField]
+	private float checkBoxBackwardDistance = 0.3f;
+
+	[SerializeField]
+	private Vector3 checkBoxUpOrig = new Vector3(0.0f, 1.0f, 0.0f);
+	[SerializeField]
+	private Vector3 checkBoxUp = new Vector3(0.15f, 0.15f, 0.15f);
 
 	//private bool canJump = false;
 	//private bool canDoubleJump = false;
 
 	//private Animator animator;
 
+	private Vector3 tempVector3 = Vector3.zero;
 	private Vector3 direction = Vector3.zero;
-	private Vector3 tempVector;
+	private Vector3 newVelocity = Vector3.zero;
+
+	private Vector2 tempVector2 = Vector2.zero;
+	private Vector2 lastJoystickValue = Vector2.zero;
 
 	//Actions states
 	private bool isMoving = false;
@@ -53,6 +82,151 @@ public class Player3D_Jumper : PlayerScript
 	private bool isOnWall = false;
 	private bool isStoping = false;
 
+
+	enum States
+	{
+		Imobile,
+		Walk,
+		Run,
+		Falling,
+		JumpUp,
+		JumpDown,
+		OnWall,
+		WallJumpUp,
+		WallJumpDown,
+		Crouch,
+		LongJump,
+		OnWater,
+		InWater,
+		Flight,
+		SuperRun,
+		WallRun,
+		SlideGround,
+		SlideRamp
+	}
+
+	private States actualState = States.Imobile;
+
+	private States ActualState
+	{
+		get
+		{
+			return actualState;
+		}
+
+		set
+		{
+			if (value == actualState)
+			{
+				return;
+			}
+
+			actualState = value;
+
+			//Debug.Log(actualState);
+
+			switch (actualState)
+			{
+				default:
+				case States.Imobile:
+				case States.Walk:
+					IsGrounded = true;
+					isOnWall = false;
+					isJumping = false;
+					speedMove = speedMoveNormale;
+					speedRot = speedRotNormale;
+					break;
+				case States.Run:
+					IsGrounded = true;
+					isOnWall = false;
+					isJumping = false;
+					speedMove = speedMoveRun;
+					speedRot = speedRotRun;
+					break;
+				case States.Falling:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = false;
+					break;
+				case States.JumpUp:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = true;
+					//reduire longeur du check down
+					break;
+				case States.JumpDown:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = true;
+					break;
+				case States.OnWall:
+					IsGrounded = false;
+					isOnWall = true;
+					isJumping = false;
+					speedMove = 0.0f;
+					speedRot = 0.0f;
+					break;
+				case States.WallJumpUp:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = true;
+					break;
+				case States.WallJumpDown:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = true;
+					break;
+				case States.Crouch:
+					IsGrounded = true;
+					isOnWall = false;
+					isJumping = false;
+					speedMove = speedMoveCrouch;
+					speedRot = speedRotCrouch;
+					break;
+				case States.LongJump:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = true;
+					break;
+				case States.OnWater:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = false;
+					break;
+				case States.InWater:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = false;
+					break;
+				case States.Flight:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = false;
+					break;
+				case States.SuperRun:
+					IsGrounded = true;
+					isOnWall = false;
+					isJumping = false;
+					break;
+				case States.WallRun:
+					IsGrounded = false;
+					isOnWall = true;
+					isJumping = false;
+					break;
+				case States.SlideGround:
+					IsGrounded = true;
+					isOnWall = false;
+					isJumping = false;
+					break;
+				case States.SlideRamp:
+					IsGrounded = false;
+					isOnWall = false;
+					isJumping = false;
+					break;
+			}
+		}
+	}
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -63,104 +237,443 @@ public class Player3D_Jumper : PlayerScript
 		speedRot = speedRotNormale;
 
 		//Debug.Log("playerID: "+playerID);
+
+		//Time.timeScale = 0.5f;
 	}
 
-	protected override void Start()
+	private Collider[] CheckDownInfos = new Collider[0];
+	private bool CheckDown()
 	{
-		ControlManager.AddPlayerScriptCharacters(this);
+		CheckDownInfos = Physics.OverlapBox(_rigidbody.position + _transform.TransformDirection(checkBoxGroundOrig), checkBoxGround, _rigidbody.rotation, layerMaskGround);
+		return CheckDownInfos.Length > 0;
 	}
+
+	private Collider[] CheckUpInfos = new Collider[0];
+	private bool CheckUp()
+	{
+		//CheckUpInfos = Physics.OverlapBox(_rigidbody.position + checkBoxUpOrig, checkBoxUp, _rigidbody.rotation, layerMaskGround);
+		//return CheckUpInfos.Length > 0;
+		return false;
+	}
+
+	private RaycastHit CheckForwardInfo = new RaycastHit();
+	private bool CheckForward()
+	{
+		Physics.BoxCast(_rigidbody.position + _transform.TransformDirection(checkBoxForwardOrig), checkBoxForward, _transform.forward, out CheckForwardInfo, _rigidbody.rotation, checkBoxForwardDistance, layerMaskGround);
+
+		return CheckForwardInfo.collider;
+	}
+
+	private RaycastHit CheckBackwardInfo = new RaycastHit();
+	private bool CheckBackward()
+	{
+		Physics.BoxCast(_rigidbody.position + _transform.TransformDirection(checkBoxBackwardOrig), checkBoxBackward, -_transform.forward, out CheckBackwardInfo, _rigidbody.rotation, checkBoxBackwardDistance, layerMaskGround);
+
+		return CheckBackwardInfo.collider;
+	}
+
+	private bool CheckSide()
+	{
+		return false;
+	}
+
+	private void GameOver()
+	{
+		isJumping = false;
+		_rigidbody.velocity = Vector3.zero;
+		LevelManager.Instance.Respawn();
+
+		ActualState = States.Imobile;
+
+		return;
+	}
+
+	private void Gravity()
+	{
+		newVelocity.y = _rigidbody.velocity.y - gravity;
+
+		if (newVelocity.y < maxFallSpeed)
+		{
+			newVelocity.y = maxFallSpeed;
+		}
+	}
+
+	private void Rotate()
+	{
+		if (isMoving)
+		{
+			_rigidbody.MoveRotation(Quaternion.RotateTowards(_rigidbody.rotation, Quaternion.LookRotation(direction), speedRot * Time.fixedDeltaTime));
+		}
+	}
+
+	private void Move()
+	{
+		tempVector3 = _rigidbody.velocity;
+		float saveY = tempVector3.y;
+		tempVector3.y = 0;
+		newVelocity = Vector3.MoveTowards(tempVector3, direction * speedMove, speedForce * Time.fixedDeltaTime);
+		newVelocity.y = saveY;
+	}
+
+	private void MoveOnWall()
+	{
+		newVelocity = _rigidbody.velocity;
+		newVelocity.x = newVelocity.z = 0.0f;
+	}
+
+	private void GoOnWall()
+	{
+		ActualState = States.OnWall;
+
+		tempVector3 = CheckForwardInfo.normal;
+		tempVector3.y = 0;
+		_transform.rotation = Quaternion.LookRotation(tempVector3);
+
+		//Debug.Log("Go on " + CheckForwardInfos[0].collider.name + ": " + tempVector3);
+	}
+
+	/*private void CheckHit(ref RaycastHit[] raycastHitInfos)
+	{
+		if (raycastHitInfos[0].distance > 0.0f)
+		{
+			return;
+		}
+
+		tempVector3.Set(_rigidbody.position.x, checkBoxForwardOrig.y, _rigidbody.position.z);
+
+		raycastHitInfos = Physics.RaycastAll(tempVector3, _transform.forward, 0.5f, layerMaskGround);
+	}*/
 
 	void FixedUpdate()
 	{
-		if(!isControlled || PauseManager.IsPause)
+		if (!isControlled || PauseManager.Instance.IsPause)
 		{
 			return;
 		}
 
 		//Game over
-		if(_rigidbody.position.y <= -10)
+		if (_rigidbody.position.y < -10.0f)
 		{
-			isJumping = false;
-			_rigidbody.velocity = Vector3.zero;
-			LevelManager.Respawn();
+			GameOver();
 			return;
 		}
 
-		direction = Input.GetAxis("Horizontal_" + playerID) * LevelManager.mainCameraTrans.right;
-		direction += Input.GetAxis("Vertical_" + playerID) * LevelManager.mainCameraTrans.forward;
-		direction.y = 0;
-		direction.Normalize();
+		//valeur du joystic
+		tempVector2.Set(Input.GetAxis("Horizontal_" + playerID), Input.GetAxis("Vertical_" + playerID));
 
-		isMoving = direction.x != 0 || direction.z != 0;
+		//Check si la valeur de l'angle ou de la magnitude du joystick a changée
+		if (Vector2.Angle(tempVector2, lastJoystickValue) > 1.0f || Mathf.Abs(tempVector2.magnitude - lastJoystickValue.magnitude) > 0.1f)
+		{
+			//si oui: recup direction joystick et addapte selon camera
+
+			lastJoystickValue = tempVector2;
+
+			direction = tempVector2.x * LevelManager.Instance.mainCameraTrans.right;
+			direction += tempVector2.y * LevelManager.Instance.mainCameraTrans.forward;
+			direction.y = 0.0f;
+			direction.Normalize();
+		}
+
+		//sinon: garde direction actuel
+		isMoving = Mathf.Abs(direction.x) > 0.1f || Mathf.Abs(direction.z) > 0.1f;
 
 		isCrouch = Input.GetButton("ActionY_" + playerID);
 		isRuning = Input.GetButton("ActionX_" + playerID);
 
-		if(isJumping)
+		int limit = 2;
+
+	StateUpdate:
+
+		if (limit <= 0)
 		{
-			Jumping();
+			Debug.LogWarning("limit of State Update");
+			goto EndFixedUpdate;
 		}
 		else
 		{
-			if(isCrouch)
-			{
-				//Debug.Log("isCrouch");
-				speedMove = speedMoveCrouch;
-				speedRot = speedRotCrouch;
-			}
-			else if(isRuning && isMoving)
-			{
-				//Debug.Log("isRuning");
-				speedMove = speedMoveRun;
-				speedRot = speedRotRun;
-			}
-			else
-			{
-				speedMove = speedMoveNormale;
-				speedRot = speedRotNormale;
-			}
+			limit--;
 		}
 
-		//check ground
-		if(_rigidbody.velocity.y >= 0 && isJumping)
+		switch (actualState)
 		{
-			IsGrounded = false;
-			//_rigidbody.useGravity = false;
-		}
-		else
-		{
-			IsGrounded = Physics.CheckBox(_rigidbody.position + checkBoxGroundOrig, checkBoxGround, _rigidbody.rotation, layerMaskGround);
-			if(IsGrounded && isJumping)
-			{
-				isJumping = false;
-			}
+			case States.Imobile:
+			case States.Walk:
+			case States.Run:
+				if (!CheckDown())
+				{
+					ActualState = States.Falling;
+					goto StateUpdate;
+				}
+				else if (CheckUp())
+				{
+					ActualState = States.Crouch;
+					goto StateUpdate;
+				}
+				else if (CheckForward())
+				{
+					if (actualState != States.Imobile)
+					{
+						ActualState = States.Imobile;
+						goto StateUpdate;
+					}
+				}
 
-			//Gravity
-			if(!IsGrounded && !isJumping)
-			{
-				tempVector = _rigidbody.velocity;
-				tempVector.y -= gravity * Time.fixedDeltaTime;
-				_rigidbody.velocity = tempVector;
+				Rotate();
+				Move();
+				Gravity();
+				break;
 
-				//_rigidbody.useGravity = true;
-			}
+			case States.JumpUp:
+			case States.WallJumpUp:
+
+				/*if (CheckDown())
+				{
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}*/
+
+				if (CheckUp())
+				{
+					switch (actualState)
+					{
+						case States.JumpUp:
+							ActualState = States.JumpDown;
+							break;
+						case States.WallJumpUp:
+							ActualState = States.WallJumpDown;
+							break;
+					}
+					goto StateUpdate;
+				}
+
+				Jumping();
+				Move();
+
+				break;
+
+			case States.Falling:
+				if (CheckDown())
+				{
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}
+				else if (CheckForward())
+				{
+					GoOnWall();
+					goto StateUpdate;
+				}
+				else if (CheckBackward() || CheckSide())
+				{
+					GoOnWall();
+					goto StateUpdate;
+				}
+
+				Move();
+				Gravity();
+				break;
+
+			case States.JumpDown:
+
+				if (CheckDown())
+				{
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}
+				else if (CheckForward())
+				{
+					GoOnWall();
+					goto StateUpdate;
+				}
+				else if (CheckBackward() || CheckSide())
+				{
+					GoOnWall();
+					goto StateUpdate;
+				}
+
+				Jumping();
+				Move();
+
+				break;
+
+			case States.OnWall:
+				if (CheckDown())
+				{
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}
+				else if (CheckUp())
+				{
+					ActualState = States.Falling;
+					goto StateUpdate;
+				}
+				else if (!CheckBackward())
+				{
+					ActualState = States.Falling;
+					goto StateUpdate;
+				}
+
+				MoveOnWall();
+
+				//Gravity();
+				newVelocity.y = _rigidbody.velocity.y;
+
+				newVelocity.y -= 0.12f;
+
+				if (newVelocity.y < -3f)
+				{
+					newVelocity.y = -3f;
+				}
+
+				break;
+
+			case States.WallJumpDown:
+
+				if (CheckDown())
+				{
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}
+				else if (CheckForward())
+				{
+					//ActualState = States.OnWall;
+					GoOnWall();
+					goto StateUpdate;
+				}
+				else if (CheckSide())
+				{
+					ActualState = States.OnWall;
+					goto StateUpdate;
+				}
+
+				Jumping();
+				Move();
+
+				break;
+
+			case States.Crouch:
+				if (!CheckDown())
+				{
+					ActualState = States.Falling;
+					goto StateUpdate;
+				}
+				else if (CheckUp())
+				{
+
+					//Check distance pour écrasement et si possible redressement
+
+					//DEATH
+
+					GameOver();
+					return;
+				}
+
+				Rotate();
+				Move();
+
+				Gravity();
+				break;
+
+			case States.LongJump:
+				/*if (CheckDown())
+				{
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}*/
+				if (CheckForward())
+				{
+					//ActualState = States.OnWall;
+					GoOnWall();
+					goto StateUpdate;
+				}
+				else if (CheckSide())
+				{
+					ActualState = States.OnWall;
+					goto StateUpdate;
+				}
+
+				Jumping();
+				Move();
+				break;
+
+			case States.OnWater:
+
+				if (CheckDown())
+				{
+					//info pour sol ou cascade = Imobile ou Falling
+
+					ActualState = States.Imobile;
+					goto StateUpdate;
+				}
+
+				Rotate();
+				Move();
+				break;
+				/*
+				case States.InWater:
+					Rotate();
+					break;
+				case States.Flight:
+					if (!CheckDown())
+					{
+
+					}
+					break;
+				case States.SuperRun:
+					if (!CheckDown())
+					{
+
+					}
+
+					Gravity();
+					break;
+				case States.WallRun:
+					if (!CheckDown())
+					{
+
+					}
+					break;
+				case States.SlideGround:
+					if (!CheckDown())
+					{
+
+					}
+
+					Gravity();
+					break;
+				case States.SlideRamp:
+					if (!CheckDown())
+					{
+
+					}
+					break;*/
 		}
 
-		if(isMoving)
-		{
-			_rigidbody.MoveRotation(Quaternion.RotateTowards(_rigidbody.rotation, Quaternion.LookRotation(direction), speedRot * Time.fixedDeltaTime));
-			_rigidbody.MovePosition(direction * speedMove * Time.fixedDeltaTime + _rigidbody.position);
-		}
+	EndFixedUpdate:
+
+		_rigidbody.velocity = newVelocity;
 	}
 
-	public override void UseActionA_Press()
+	/*public override void UseActionA_Press()
 	{
-		if(IsGrounded)
+		switch (actualState)
 		{
-			Jump();
+			case States.Imobile:
+			case States.Walk:
+			case States.Run:
+			case States.OnWall:
+			case States.Crouch:
+			case States.OnWater:
+			case States.Flight:
+			case States.SuperRun:
+			case States.WallRun:
+			case States.SlideGround:
+			case States.SlideRamp:
+				Jump();
+				break;
 		}
-	}
+	}*/
 
+	/*
 	public override void UseActionB_Press()
 	{
 		//Debug.Log("UseActionB_Press");
@@ -169,13 +682,13 @@ public class Player3D_Jumper : PlayerScript
 	public override void UseActionX_Press()
 	{
 		//Debug.Log("UseActionX_Press");
-
 	}
 
 	public override void UseActionY_Press()
 	{
 		//Debug.Log("UseActionY_Press");
 	}
+	*/
 
 	[Header("Jump Properties")]
 	[SerializeField]
@@ -188,11 +701,11 @@ public class Player3D_Jumper : PlayerScript
 	private AnimationCurve jumpCurveOther;
 
 	[SerializeField]
-	private float jumpTime = 1;
+	private float jumpTime = 1.0f;
 	private float jumpTimer;
 
 	[SerializeField]
-	private float DecalJumpTargetY = 0;
+	private float DecalJumpTargetY = 0.0f;
 
 	private float JumpHeight;
 
@@ -217,17 +730,17 @@ public class Player3D_Jumper : PlayerScript
 	[SerializeField]
 	private float JumpWallHeight = 2.2f;
 	[SerializeField]
-	private float JumpWallDistance = 4;
+	private float JumpWallDistance = 4.0f;
 
 	[SerializeField]
 	private float JumpLongHeight = 1.2f;
 	[SerializeField]
-	private float JumpLongDistance = 6;
+	private float JumpLongDistance = 6.0f;
 
 	[SerializeField]
 	private float JumpLongRunHeight = 1.2f;
 	[SerializeField]
-	private float JumpLongRunDistance = 8;
+	private float JumpLongRunDistance = 8.0f;
 
 	private Vector3 positionBeforeJump;
 	private Vector3 positionTargetJump;
@@ -236,118 +749,140 @@ public class Player3D_Jumper : PlayerScript
 
 	public void Jump()
 	{
-		//tempVector.Set(0, 0, 0);
-		//_rigidbody.velocity = tempVector;
-		if(isOnWall)
+		if (isOnWall)
 		{
+			ActualState = States.WallJumpUp;
 			JumpCalcul(true, JumpWallHeight, JumpWallDistance, speedMoveNormale);
 		}
-		else if(isRuning)
+		else if (isRuning)
 		{
-			if(isCrouch)
+			if (isCrouch)
 			{
+				ActualState = States.LongJump;
 				JumpCalcul(true, JumpLongRunHeight, JumpLongRunDistance, speedMoveCrouch);
 			}
-			else if(isStoping)
+			else if (isStoping)
 			{
-				JumpCalcul(false, JumpReturnedHeight, 0, 4);
+				ActualState = States.JumpUp;
+				JumpCalcul(false, JumpReturnedHeight, 0.0f, 4.0f);
 			}
 			else
 			{
-				JumpCalcul(false, JumpRunHeight, 0, speedMoveRun);
+				ActualState = States.JumpUp;
+				JumpCalcul(false, JumpRunHeight, 0.0f, speedMoveRun);
 			}
 		}
-		else if(isMoving)
+		else if (isMoving)
 		{
-			if(isCrouch)
+			if (isCrouch)
 			{
+				ActualState = States.LongJump;
 				JumpCalcul(true, JumpLongHeight, JumpLongDistance, speedMoveCrouch);
 			}
 			else
 			{
-				JumpCalcul(false, JumpNormalMovingHeight, 0, speedMoveNormale);
+				ActualState = States.JumpUp;
+				JumpCalcul(false, JumpNormalMovingHeight, 0.0f, speedMoveNormale);
 			}
 		}
 		else
 		{
-			if(isCrouch)
+			if (isCrouch)
 			{
+				ActualState = States.JumpUp;
 				JumpCalcul(false, JumpCrouchHeight, 0, speedMoveCrouch);
 			}
 			else
 			{
+				ActualState = States.JumpUp;
 				JumpCalcul(false, JumpNormalHeight, 0, speedMoveNormale);
 			}
 		}
 	}
+
+	private bool firstPartJump = false;
 
 	void JumpCalcul(bool haveDirection, float _jumpHeight, float _jumpDistance, float _speedInJump)
 	{
 		JumpHeight = _jumpHeight;
 		speedMove = _speedInJump;
 
-		jumpTimer = 0;
+		jumpTimer = 0.0f;
 
 		transitionPosition = positionBeforeJump = _rigidbody.position;
 
-		if(haveDirection)
+		if (haveDirection)
 		{
-			tempVector = _transform.forward;
-			tempVector.y = 0;
+			tempVector3 = _transform.forward;
+			tempVector3.y = 0;
 
-			positionTargetJump = tempVector.normalized * _jumpDistance + _rigidbody.position;
+			positionTargetJump = tempVector3.normalized * _jumpDistance + _rigidbody.position;
 		}
 		else
 		{
 			positionTargetJump = _rigidbody.position;
 		}
+
 		positionTargetJump.y += DecalJumpTargetY;
 
-		IsGrounded = false;
-		isJumping = true;
+		firstPartJump = true;
+		upTouchInJumping = false;
 	}
+
+	bool upTouchInJumping = false;
 
 	public void JumpRebound()
 	{
-		JumpCalcul(false, JumpBounceHeight, 0, speedMove);
+		JumpCalcul(false, JumpBounceHeight, 0.0f, speedMove);
 	}
 
 	private Vector3 transitionPosition;
 	private Vector3 transitionPositionBefore;
 	private Vector3 transitionFactor;
 
+	private float pourcent;
+
 	private void Jumping()
 	{
 		jumpTimer += Time.fixedDeltaTime;
 
-		float pourcent = jumpTimer / jumpTime;
+		pourcent = jumpTimer / jumpTime;
 
-		if(pourcent < 0.5f) //ascending
+		if (firstPartJump && pourcent > 0.5f)
 		{
-			//_rigidbody.UpCast();
-			bool upTouch = false;
+			firstPartJump = false;
 
-			if(upTouch)
+			switch (actualState)
 			{
-				jumpTimer = jumpTime * (1 - pourcent);
-
-				/*	tempVector = _rigidbody.velocity;
-					tempVector.y = -tempVector.y;
-					_rigidbody.velocity = tempVector;*/
+				case States.JumpUp:
+					ActualState = States.JumpDown;
+					break;
+				case States.WallJumpUp:
+					ActualState = States.WallJumpDown;
+					break;
 			}
-			//_rigidbody.ForwardCast();
 		}
 
-		if(pourcent >= 1)
+		if (upTouchInJumping) //ascending
 		{
-			isJumping = false;
+			upTouchInJumping = false;
+			if (pourcent < 0.5f)
+			{
+				jumpTimer = jumpTime * (1.0f - pourcent);
+			}
+		}
 
-			pourcent = 1 - Time.fixedDeltaTime;
+		if (pourcent >= 1.0f)
+		{
+			actualState = States.Falling;
+
+			pourcent = 1.0f - Time.fixedDeltaTime;
 
 			transitionPositionBefore = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
 			transitionPositionBefore.y += JumpHeight * jumpCurveDefault.Evaluate(pourcent);
 
-			transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, 1);
+			//Appli velocity 
+			_rigidbody.velocity += (positionTargetJump - transitionPositionBefore) / Time.fixedDeltaTime;
 		}
 		else
 		{
@@ -355,36 +890,85 @@ public class Player3D_Jumper : PlayerScript
 
 			transitionPosition = Vector3.Lerp(positionBeforeJump, positionTargetJump, pourcent);
 			transitionPosition.y += JumpHeight * jumpCurveDefault.Evaluate(pourcent);
+
+			transitionFactor = transitionPosition - transitionPositionBefore;
+
+			//Appli mouvement
+			tempVector3 = transitionFactor;
+			tempVector3.y = 0.0f;
+			_rigidbody.MovePosition(tempVector3 + _rigidbody.position);
+
+			tempVector3 = _rigidbody.velocity;
+			tempVector3.y = transitionFactor.y / Time.fixedDeltaTime;
+			_rigidbody.velocity = tempVector3;
 		}
-
-		transitionFactor = transitionPosition - transitionPositionBefore;
-
-		//Appli mouvement
-		//_rigidbody.velocity = Time.fixedDeltaTime > 0f ? (transitionPosition - transitionPositionBefore) * MovePower / Time.fixedDeltaTime : Vector3.zero;
-		tempVector = transitionFactor;
-		tempVector.y = 0;
-		_rigidbody.MovePosition(tempVector + _rigidbody.position);
-		transitionFactor.x = 0;
-		transitionFactor.z = 0;
-		_rigidbody.velocity = transitionFactor / Time.fixedDeltaTime;
-
 	}
 
+	/*private void OnTriggerEnter(Collider other)
+	{
+		
+	}*/
+
+	/*	private void OnCollisionEnter(Collision collision)
+		{
+			if (isJumping)
+			{
+				if (collision.contacts[0].point.y >= _rigidbody.position.y)
+				{
+					if (true)
+					{
+						upTouchInJumping = true;
+					}
+				}
+
+				float testAngle = Vector3.Angle(collision.contacts[0].point - _rigidbody.position, _transform.forward);
+
+				if (testAngle <= 90.0f)
+				{
+					ActualState = States.OnWall;
+
+					tempVector3 = collision.contacts[0].normal;
+					tempVector3.y = 0;
+					_rigidbody.MoveRotation(Quaternion.LookRotation(tempVector3));
+				}
+			}
+		}*/
+
 	#endregion
+
 
 	#region UNITY_EDITOR
 #if UNITY_EDITOR
 
 	Vector3 start, end;
+
+	private void DrawBoxCast(Vector3 origine, Vector3 size, float distance)
+	{
+		origine.z += origine.z > 0 ? distance / 2.0f : -distance / 2.0f;
+		origine += transform.position;
+
+		size *= 2.0f;
+		size.z += distance;
+
+		Gizmos.DrawWireCube(origine, size);
+	}
+
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.cyan;
-		Gizmos.DrawWireCube(transform.position + checkBoxGroundOrig, checkBoxGround);
+		Gizmos.DrawWireCube(transform.position + checkBoxGroundOrig, checkBoxGround * 2.0f);
+
+		DrawBoxCast(checkBoxForwardOrig, checkBoxForward, checkBoxForwardDistance);
+
+		DrawBoxCast(checkBoxBackwardOrig, checkBoxBackward, checkBoxBackwardDistance);
+
+		//Gizmos.DrawWireCube(transform.position + checkBoxBackwardOrig, checkBoxBackward);
+		Gizmos.DrawWireCube(transform.position + checkBoxUpOrig, checkBoxUp);
 
 		//Jump transition
 		Gizmos.color = Color.blue;
 		start = positionBeforeJump;
-		for(float i = 0; i <= 1; i += 0.05f)
+		for (float i = 0; i <= 1; i += 0.05f)
 		{
 			end = Vector3.Lerp(positionBeforeJump, positionTargetJump, i);
 			end.y += JumpHeight * jumpCurveDefault.Evaluate(i);

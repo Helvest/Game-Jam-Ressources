@@ -33,16 +33,11 @@ public class Player3D_Ship : PlayerScript
 		_rigidbody = GetComponent<Rigidbody>();
 	}
 
-	protected override void Start()
-	{
-		ControlManager.AddPlayerScriptCharacters(this);
-	}
-
 	private float speedMove = 0;
 	private Vector3 controlDirection = Vector3.zero;
 	void FixedUpdate()
 	{
-		if(!isControlled || PauseManager.IsPause)
+		if (!isControlled || PauseManager.Instance.IsPause)
 		{
 			return;
 		}
@@ -57,7 +52,7 @@ public class Player3D_Ship : PlayerScript
 
 		controlDirection.Set(Input.GetAxis("Vertical_" + playerID), Input.GetAxis("Horizontal_" + playerID), Input.GetAxis("Mouse Y"));
 
-		if(controlDirection.x != 0 || controlDirection.y != 0 || controlDirection.z != 0)
+		if (controlDirection.x != 0 || controlDirection.y != 0 || controlDirection.z != 0)
 		{
 			controlDirection.x *= speedPitch;
 			controlDirection.y *= speedYaw;
@@ -67,13 +62,13 @@ public class Player3D_Ship : PlayerScript
 			_rigidbody.MoveRotation(_rigidbody.rotation * Quaternion.Euler(controlDirection));
 		}
 
-		if(cruiseMode)
+		if (cruiseMode)
 		{
 			_rigidbody.MovePosition(_transform.forward * speedMove * Time.fixedDeltaTime + _rigidbody.position);
 		}
-		else if(Input.GetAxisRaw("R2_" + playerID) == 1)
+		else if (Input.GetAxisRaw("R2_" + playerID) == 1)
 		{
-			if(Input.GetButton("ActionA_" + playerID))
+			if (Input.GetButton("ActionA_" + playerID))
 			{
 				speedMove = speedMoveBoost;
 			}
@@ -92,23 +87,12 @@ public class Player3D_Ship : PlayerScript
 		//UpdateParticul();
 	}
 
-	public override void UseActionA_Press()
+	/*public override void UseActionA_Press()
 	{
 		cruiseMode = !cruiseMode;
 		speedMove = speedMoveCruise;
 	}
-
-	public override void UseActionB_Press()
-	{
-	}
-
-	public override void UseActionX_Press()
-	{
-	}
-
-	public override void UseActionY_Press()
-	{
-	}
+	*/
 
 	/*[SerializeField]
 	private ParticleSystem psTrail;

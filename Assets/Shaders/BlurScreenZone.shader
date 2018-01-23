@@ -1,4 +1,6 @@
-﻿Shader "Camera/BlurScreenZone"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Camera/BlurScreenZone"
 {
 	Properties
 	{
@@ -39,7 +41,7 @@
 				v2f simplevert(appdata v)
 				{
 					v2f o;
-					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.vertex = UnityObjectToClipPos(v.vertex);
 					o.uv = v.uv;
 					return o;
 				}
@@ -47,7 +49,7 @@
 				v2f vert(appdata v)
 				{
 					v2f o;
-					o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+					o.vertex = UnityObjectToClipPos(v.vertex);
 					o.uv = v.uv;
 					o.uv1 = v.uv;
 
@@ -70,7 +72,7 @@
 					//Image filmé par la camera
 					fixed4 col = tex2D(_MainTex, i.uv);
 
-					if(_Blur == 0 || _Definition == 0)
+					if (_Blur == 0 || _Definition == 0)
 						return col;
 
 					//Texture d'animation
@@ -78,16 +80,16 @@
 
 					float blur = _Blur - transit.b * _Blur;
 
-					float amont = 6.283/_Definition + 1;
+					float amont = 6.283 / _Definition + 1;
 
 					float j = -3.1415;
-					for(int h = _Definition; h > 0; h--)
+					for (int h = _Definition; h > 0; h--)
 					{
 						col += tex2D(_MainTex, float2(i.uv.x + (blur * sin(j)), i.uv.y + (blur * cos(j))));
 						j += amont;
 					}
 
-					return col/(_Definition + 1);
+					return col / (_Definition + 1);
 				}
 				ENDCG
 			}

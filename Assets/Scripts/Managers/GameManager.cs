@@ -16,12 +16,12 @@ public class GameManager : Singleton<GameManager>
 		InLoading
 	}
 
-	private static States state = States.InMenu;
+	private States state = States.InMenu;
 	/// <summary>
 	/// Actual state of the game
 	/// Make the transition from one state to another
 	/// </summary>
-	public static States State
+	public States State
 	{
 		get
 		{
@@ -58,7 +58,7 @@ public class GameManager : Singleton<GameManager>
 	/// </summary>
 	public void LoadScene(string sceneName)
 	{
-		LoadingScreen.instance.Load(sceneName);
+		LoadingScreen.Instance.Load(sceneName);
 	}
 
 	/// <summary>
@@ -66,6 +66,6 @@ public class GameManager : Singleton<GameManager>
 	/// </summary>
 	public void LoadScene(int sceneNumber)
 	{
-		LoadingScreen.instance.Load(sceneNumber);
+		LoadingScreen.Instance.Load(sceneNumber);
 	}
 }

@@ -32,19 +32,17 @@ public class LoadingScreen : Singleton<LoadingScreen>
 	[SerializeField]
 	private float speed = 0.25f;
 
-	private static Slider slider;
+	private Slider slider;
 
-	private static bool isLoading = false;
+	private bool isLoading = false;
 
-	private static AsyncOperation asyncOperation;
+	private AsyncOperation asyncOperation;
 
-	private static int nextSceneNumber = -1;
-	private static string nextSceneName = null;
+	private int nextSceneNumber = -1;
+	private string nextSceneName = null;
 
-	protected override void Awake()
+	protected override void OnAwake()
 	{
-		base.Awake();
-
 		enabled = false;
 
 		transform.position = new Vector3(0.5f, 0.5f, 0.0f);
@@ -61,7 +59,7 @@ public class LoadingScreen : Singleton<LoadingScreen>
 	/// </summary>
 	public void Load(int sceneNumber)
 	{
-		if(!instance || isLoading)
+		if(isLoading)
 			return;
 
 		nextSceneNumber = sceneNumber;
@@ -75,7 +73,7 @@ public class LoadingScreen : Singleton<LoadingScreen>
 	/// </summary>
 	public void Load(string sceneName)
 	{
-		if(!instance || isLoading)
+		if(isLoading)
 			return;
 
 		nextSceneNumber = -1;
@@ -96,7 +94,7 @@ public class LoadingScreen : Singleton<LoadingScreen>
 
 	IEnumerator LoadingOperation()
 	{
-		GameManager.State = GameManager.States.InLoading;
+		GameManager.Instance.State = GameManager.States.InLoading;
 
 		//preparation
 		isLoading = true;

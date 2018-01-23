@@ -27,7 +27,7 @@ public class Point3D : MonoBehaviour
 #if UNITY_EDITOR
 	public void ForceAwake()
 	{
-		horizontalTrans = transform.FindChild("horizontalTrans");
+		horizontalTrans = transform.Find("horizontalTrans");
 
 		if(horizontalTrans)
 		{

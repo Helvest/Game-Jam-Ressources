@@ -160,6 +160,22 @@ public class MovingPlatform : MonoBehaviour
 		}
 	}
 
+	private void OnTriggerEnter(Collider other)
+	{
+		if (!carriedObjects.Contains(other.transform))
+		{
+			carriedObjects.Add(other.transform);
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (carriedObjects.Contains(other.transform))
+		{
+			carriedObjects.Remove(other.transform);
+		}
+	}
+
 	private float moveTimer, moveTime;
 
 	private void GetNextObjectif()
