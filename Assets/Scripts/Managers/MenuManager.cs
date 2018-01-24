@@ -25,4 +25,12 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		LoadingScreen.Instance.Load(sceneNumber);
 	}
+
+	/// <summary>
+	/// Change to fullscreen
+	/// </summary>
+	public void FullScreen(bool active)
+	{
+		Screen.fullScreen = active;
+	}
 }
