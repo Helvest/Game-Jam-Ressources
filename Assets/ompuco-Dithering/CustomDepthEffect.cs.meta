@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: bebe550601c8fe049a8b0353ae11de68
+timeCreated: 1524607011
+licenseType: Pro
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - precisionMat: {fileID: 2100000, guid: 2922707a391d0944d8e14b37d1674231, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

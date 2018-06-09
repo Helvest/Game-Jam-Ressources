@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ca06d8f6fe87ef14dbd0d07a03075a79
+timeCreated: 1524607011
+licenseType: Pro
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - ditherMat: {fileID: 2100000, guid: 4a1bc502c0c5c6f46b54448720cb7d33, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
