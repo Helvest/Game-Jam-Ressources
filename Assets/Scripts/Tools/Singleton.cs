@@ -15,17 +15,17 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 		get
 		{
 			// search for an object of type T in the scene
-			if(_Instance == null)
+			if (_Instance == null)
 			{
-				/*_Instance = FindObjectOfType<T>();
+				_Instance = FindObjectOfType<T>();
 
-				if(_Instance == null)
+				/*if(_Instance == null)
 				{
 					GameObject go = new GameObject(typeof(T).Name);
 					_Instance = go.AddComponent<T>();
-				}*/
+				}
 
-				Debug.LogError("Instance is null");
+				Debug.LogError("Instance is null");*/
 			}
 
 			return _Instance;
@@ -36,22 +36,23 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 
 	private void Awake()
 	{
-		if(_Instance != null)
+		if (_Instance == null)
+		{
+			_Instance = (T)this;
+			_transform = transform;
+
+			if (dontDestroyOnLoad)
+			{
+				DontDestroyOnLoad(gameObject);
+			}
+
+			OnAwake();
+		}
+		else if (_Instance != this)
 		{
 			Destroy(gameObject);
 			DestroyImmediate(this);
-			return;
 		}
-
-		_Instance = (T)this;
-		_transform = transform;
-
-		if (dontDestroyOnLoad)
-		{
-			DontDestroyOnLoad(gameObject);
-		}
-
-		OnAwake();
 	}
 
 	protected virtual void OnAwake()

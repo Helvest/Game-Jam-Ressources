@@ -6,13 +6,13 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Toon_Dissolve
-  m_Shader: {fileID: 4800000, guid: 37aae7c40abe79b4d8b1438a79c4b8ef, type: 3}
-  m_ShaderKeywords: ALPHA
+  m_Name: Cloud
+  m_Shader: {fileID: 4800000, guid: a6d25abf3fdd743408f97c8273ec0a1b, type: 3}
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -46,8 +46,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _NoiseTex:
-        m_Texture: {fileID: 2800000, guid: 2929ac72bac83eb45897af1c08bf4f2e, type: 3}
+    - _Noise:
+        m_Texture: {fileID: 2800000, guid: 9847281c7fd00f945b2084a536c4d400, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -58,34 +58,33 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Ramp:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _ALPHA: 1
+    - _AnimSpeedX: 1
+    - _AnimSpeedY: 1
+    - _AnimSpeedZ: 1
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DisAmount: 0.638
-    - _DisLineWidth: 0.115
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LIGHTMAP: 0
+    - _Height: 0.8
     - _Metallic: 0
     - _Mode: 0
-    - _NScale: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _RimPower: 20
+    - _Scale: 0.004
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Strength: 0.3
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
+    - _CloudColor: {r: 0.6, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DisLineColor: {r: 0, g: 1, b: 0.9033842, a: 1}
-    - _DisLineColorEx: {r: 0.19172049, g: 0, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RimColor: {r: 0.6, g: 1, b: 1, a: 1}
+    - _TColor: {r: 1, g: 0.6, b: 1, a: 1}

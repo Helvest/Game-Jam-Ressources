@@ -1,6 +1,6 @@
 
 
-Shader "FX/Aura Outline" {
+Shader "FX/Aura_Outline" {
 	Properties{
 		_Color("Main Color", Color) = (.5,.5,.5,1)
 		_MainTex("Base (RGBA)", 2D) = "white" { }
