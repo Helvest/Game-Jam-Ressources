@@ -12,11 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Load.unity
     guid: f12e1eecb0800e24fa30459753842893
   - enabled: 1
-    path: Assets/Scenes/Game3D_Jumper.unity
-    guid: e39090332769d5746b1b1505307a3a96
-  - enabled: 1
-    path: Assets/Scenes/Game3D_Ship.unity
-    guid: 96c6d3e0f3ff1894e8f182d947934285
-  - enabled: 1
-    path: Assets/Scenes/TestShaders.unity
-    guid: 3dc95434cc777c348bca34dd23977ad3
+    path: Assets/Scenes/Game.unity
+    guid: a2fcb253eb9ecad4484fcf0b4d7fd4ce
+  m_configObjects: {}

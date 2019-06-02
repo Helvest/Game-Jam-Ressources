@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: ColorObjetZone
   m_Shader: {fileID: 4800000, guid: dd6fca66e2220f14dba4e3232d7aafa6, type: 3}
   m_ShaderKeywords: _EMISSION
@@ -64,7 +65,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _Cutoff: 0
+    - _Cutoff: -0.003693372
     - _DetailNormalMapScale: 1
     - _Division: 1
     - _DstBlend: 0
@@ -73,7 +74,7 @@ Material:
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
-    - _Move: 5.371855
+    - _Move: 6.3200545
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
